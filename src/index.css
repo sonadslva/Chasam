@@ -38,3 +38,6 @@
 .TextFont{
     font-family: 'textFont';
 }
+.scrollBar::-webkit-scrollbar{
+    display: none;
+}

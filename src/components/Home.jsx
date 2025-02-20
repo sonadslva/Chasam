@@ -10,6 +10,12 @@ import { TbCoinRupee } from "react-icons/tb";
 import li1 from "../assets/li1.png";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import PopUp from "./PopUp";
+import li2 from "../assets/li2.png"
+import li3 from "../assets/li3.png"
+import li4 from "../assets/li4.png"
+import skin from "../assets/skin.jpg"
+
+
 
 const Home = () => {
   const [openPopUp, setOpenPopUp] = useState(false);
@@ -36,15 +42,17 @@ const Home = () => {
               19th February 2025
             </div>
           </div>
-          <div className="flex justify-between items-center gap-5 relative pt-[50px] px-2 mb-5">
-            <div className="w-[100px] h-[100px] overflow-hidden bg-[#EFE3C2] rounded-xl p-2">
-              <img src={ps1} alt="" className="w-full h-full object-contain" />
-            </div>
-            <div className="w-[100px] h-[100px] overflow-hidden bg-[#EFE3C2] rounded-xl p-2">
-              <img src={ps2} alt="" className="w-full h-full object-contain" />
-            </div>
-            <div className="w-[100px] h-[100px] overflow-hidden bg-[#EFE3C2] rounded-xl p-2">
-              <img src={ps3} alt="" className="w-full h-full object-contain" />
+          <div className="overflow-x-auto scrollBar">
+            <div className="flex justify-between items-center gap-5 relative pt-[50px] px-2 mb-5">
+                <div className="w-[100px] h-[100px] overflow-hidden bg-[#EFE3C2] border border-[#fff] rounded-xl p-2">
+                <img src={ps1} alt="" className="w-full h-full object-contain" />
+                </div>
+                <div className="w-[100px] h-[100px] overflow-hidden bg-[#EFE3C2] border border-[#fff] rounded-xl p-2">
+                <img src={ps2} alt="" className="w-full h-full object-contain" />
+                </div>
+                <div className="w-[100px] h-[100px] overflow-hidden bg-[#EFE3C2] border border-[#fff] rounded-xl p-2">
+                <img src={ps3} alt="" className="w-full h-full object-contain" />
+                </div>
             </div>
           </div>
           <div className="px-2 mb-5 relative">
@@ -52,7 +60,7 @@ const Home = () => {
               <img src={p1} alt="" className="w-full h-full object-cover" />
             </div>
           </div>
-          <div className="mb-5">
+          <div className="mb-5 overflow-x-auto scrollBar px-2">
             <ul className="flex items-center gap-2 font-semibold">
               <li className="flex justify-center items-center flex-col text-[12px] font-semibold gap-1">
                 <div className="w-[80px] h-[80px] rounded-full bg-[#1A1A19] border-[#00aa0b] border-[2px] overflow-hidden">
@@ -94,13 +102,23 @@ const Home = () => {
                 </div>
                 <span className="text-nowrap">Migraine</span>
               </li>
+              <li className="flex justify-center items-center flex-col text-[12px] font-semibold gap-1">
+                <div className="w-[80px] h-[80px] rounded-full bg-[#1A1A19] overflow-hidden">
+                  <img
+                    src="https://duneego.ru/wp-content/uploads/2022/04/lechenie-sosudistyh-patologiy.jpg"
+                    className="w-full h-full object-cover"
+                    alt=""
+                  />
+                </div>
+                <span className="text-nowrap">Skin Isuues</span>
+              </li>
             </ul>
           </div>
         </div>
       </section>
 
       <section className="w-full px-2">
-        <div className="w-full flex flex-col gap-2 relative z-20 mb-14">
+        <div className="w-full flex flex-col gap-2 relative z-20 mb-16">
           <div className="w-full">
             <div className="w-full relative flex gap-3 drop-shadow-sm h-[80px] p-1 ProductListBox backdrop-blur-sm rounded-xl border border-[#fff] bg-[#166000]" onClick={() => setOpenPopUp(!openPopUp) }>
               <div className="w-[70px] h-[70px] rounded-xl border-[#fff] border overflow-hidden p-1">
@@ -128,14 +146,37 @@ const Home = () => {
             <div className="w-full relative flex gap-3 drop-shadow-sm h-[80px] p-1 ProductListBox backdrop-blur-sm rounded-xl border border-[#fff] bg-[#166000]" onClick={() => setOpenPopUp(!openPopUp) }>
               <div className="w-[70px] h-[70px] rounded-xl border-[#fff] border overflow-hidden p-1">
                 <img
-                  src={li1}
+                  src={li4}
                   alt=""
                   className="w-full h-full object-contain"
                 />
               </div>
               <div className="flex flex-col gap-1">
                 <div className="text-[#fff] font-medium TextFont1">
-                  Krishna Thulasi Cough Syrup
+                  Khadi Natural Hair Oil
+                </div>
+                <div className="text-[#fff] text-xl font-base flex gap-0.5 items-center">
+                  <TbCoinRupee />{" "}
+                  <span className="text-[17px] font-semibold">280</span>
+                </div>
+              </div>
+              <div className="absolute right-2 rounded-full bg-[#fff] top-2">
+                <MdOutlineArrowDropDown />
+              </div>
+            </div>
+          </div>
+          <div className="w-full">
+            <div className="w-full relative flex gap-3 drop-shadow-sm h-[80px] p-1 ProductListBox backdrop-blur-sm rounded-xl border border-[#fff] bg-[#166000]" onClick={() => setOpenPopUp(!openPopUp) }>
+              <div className="w-[70px] h-[70px] rounded-xl border-[#fff] border overflow-hidden p-1">
+                <img
+                  src={li3}
+                  alt=""
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <div className="text-[#fff] font-medium TextFont1">
+                  Indhulekha Brinka Hair Oil
                 </div>
                 <div className="text-[#fff] text-xl font-base flex gap-0.5 items-center">
                   <TbCoinRupee />{" "}
@@ -151,37 +192,14 @@ const Home = () => {
             <div className="w-full relative flex gap-3 drop-shadow-sm h-[80px] p-1 ProductListBox backdrop-blur-sm rounded-xl border border-[#fff] bg-[#166000]" onClick={() => setOpenPopUp(!openPopUp) }>
               <div className="w-[70px] h-[70px] rounded-xl border-[#fff] border overflow-hidden p-1">
                 <img
-                  src={li1}
+                  src={li2}
                   alt=""
                   className="w-full h-full object-contain"
                 />
               </div>
               <div className="flex flex-col gap-1">
                 <div className="text-[#fff] font-medium TextFont1">
-                  Krishna Thulasi Cough Syrup
-                </div>
-                <div className="text-[#fff] text-xl font-base flex gap-0.5 items-center">
-                  <TbCoinRupee />{" "}
-                  <span className="text-[17px] font-semibold">260</span>
-                </div>
-              </div>
-              <div className="absolute right-2 rounded-full bg-[#fff] top-2">
-                <MdOutlineArrowDropDown />
-              </div>
-            </div>
-          </div>
-          <div className="w-full">
-            <div className="w-full relative flex gap-3 drop-shadow-sm h-[80px] p-1 ProductListBox backdrop-blur-sm rounded-xl border border-[#fff] bg-[#166000]" onClick={() => setOpenPopUp(!openPopUp) }>
-              <div className="w-[70px] h-[70px] rounded-xl border-[#fff] border overflow-hidden p-1">
-                <img
-                  src={li1}
-                  alt=""
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <div className="text-[#fff] font-medium TextFont1">
-                  Krishna Thulasi Cough Syrup
+                  COFOL Syrup
                 </div>
                 <div className="text-[#fff] text-xl font-base flex gap-0.5 items-center">
                   <TbCoinRupee />{" "}
