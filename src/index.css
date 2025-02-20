@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: 'textFont';
+    src: url('./fonts/Nexa-Heavy.ttf');
+}
+@font-face {
+    font-family: 'textFont1';
+    src: url('./fonts/Nexa-ExtraLight.ttf');
+}
+*{
+    font-family: 'textFont1';
+}
+.TextFont1{
+    font-family: 'textFont';
+}
+/* body{
+    background: url('https://img.freepik.com/free-vector/hand-drawn-olive-green-background_23-2149725222.jpg?t=st=1739964142~exp=1739967742~hmac=2bc705054c2a2430867275dad61e87e6b18ad0dda207c3f165ca54f906f8a593&w=1060');
+    opacity: .5;
+} */
+.textGradient {
+    background: linear-gradient(120deg, #ffa200, #f7f7f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.bgGradient{
+    background: linear-gradient(90deg, rgba(62,123,39,1) 0%, rgb(27, 27, 27) 100%);
+}
+.BoxShadow{
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+.ProductListBox{
+    background: linear-gradient(120deg, #3e7b27 0%, #4da02e, #114000 100%);
+}
+.popUpBg{
+    background: linear-gradient(0deg, rgba(137,255,95,0.9024859943977591) 0%, rgba(191,255,167,1) 32%, rgba(245,255,241,1) 100%);
+}
+.TextFont{
+    font-family: 'textFont';
+}
