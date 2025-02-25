@@ -1,24 +1,46 @@
 import React, { useState, useEffect, useActionState } from "react";
 import p1 from "../assets/p1.jpg";
-import p2 from "../assets/p2.jpg";
-import ps1 from "../assets/ps1.png";
-import ps2 from "../assets/ps2.png";
-import ps3 from "../assets/ps3.png";
-import leaft1 from "../assets/leaf1.png";
 import leaft2 from "../assets/leaf2.png";
-import { TbCoinRupee } from "react-icons/tb";
-import li1 from "../assets/li1.png";
-import { MdOutlineArrowDropDown } from "react-icons/md";
 import PopUp from "./PopUp";
-import li2 from "../assets/li2.png"
-import li3 from "../assets/li3.png"
-import li4 from "../assets/li4.png"
-import skin from "../assets/skin.jpg"
-
-
-
+import hmimage1 from "../assets/homeimage1.png";
+import hmimage2 from "../assets/homeimage2.png";
+import hmimage3 from "../assets/homeimage3.png";
+import { IoRefreshCircleSharp } from "react-icons/io5";
+import { collection, getDocs } from "firebase/firestore";
+import { ref, push, onValue } from "firebase/database";
+import { dbRealtime } from "../firebaseConfig"; 
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination,Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 const Home = () => {
-  const [openPopUp, setOpenPopUp] = useState(false);
+
+  const categoryLists = [
+    {name : "Back Pain", img : "https://temruk.tomograd-kuban.ru/upload/iblock/f56/j3qqf1g0a0azavswxthterxth7vdr5u2.jpeg"},
+    {name : "Weight Loss", img : "https://s.hdnux.com/photos/76/33/37/16365519/6/rawImage.jpg" },
+    {name : "Back Pain", img : "https://temruk.tomograd-kuban.ru/upload/iblock/f56/j3qqf1g0a0azavswxthterxth7vdr5u2.jpeg"},{name : "Back Pain", img : "https://temruk.tomograd-kuban.ru/upload/iblock/f56/j3qqf1g0a0azavswxthterxth7vdr5u2.jpeg"},{name : "Back Pain", img : "https://temruk.tomograd-kuban.ru/upload/iblock/f56/j3qqf1g0a0azavswxthterxth7vdr5u2.jpeg"},
+  ]
+  const [banners, setBanners] = useState([]);
+
+  useEffect(() => {
+    const bannerRef = ref(dbRealtime, "banners");
+
+    const unsubscribe = onValue(bannerRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const bannerArray = Object.keys(data)
+          .map((key) => ({ id: key, ...data[key] }))
+          .filter((banner) => banner.status === "active"); // ✅ Filter only active banners
+
+        setBanners(bannerArray);
+      } else {
+        setBanners([]);
+      }
+    });
+
+    return () => unsubscribe(); // ✅ Cleanup on unmount
+  }, []);
+
   return (
     <div className="overflow-hidden relative w-full">
       <div className="absolute top-0 bottom-0 left-0 right-0">
@@ -30,190 +52,205 @@ const Home = () => {
       </div>
       <section className="relative overflow-hidden">
         <div>
-          <div className="w-[600px] z-0 absolute h-[600px] rounded-full top-[-290px] bgGradient overflow-hidden"></div>
-          <div className="w-[600px] -z-10 absolute h-[600px] rounded-full top-[-270px] bgGradient opacity-30 "></div>
+          <div className="w-[600px] md:w-[1200px] md:h-[1200px] lg:w-[1600px] lg:h-[1600px] BannerCircle lg:top-[-900px] z-0 absolute h-[600px] rounded-full md:top-[-550px] top-[-290px] bgGradient overflow-hidden"></div>
+          <div className="w-[600px] md:w-[1200px] md:h-[1200px] -z-10 absolute h-[600px] BannerCircle2 rounded-full top-[-270px] lg:top-[-880px] md:top-[-520px] bgGradient opacity-30 "></div>
           <div className=" absolute w-[100px] h-[100px] rotate-90 left-[-10px] drop-shadow-md">
             <img src={leaft2} alt="" />
           </div>
           <div className="relative text-[#fff] pr-2 pt-5 leading-tight">
-            <div className="text-md text-[#B1C29E] text-end font-semibold">lorem ipsum</div>
-            <div className="text-2xl text-end font-semibold TextFont1">Lorem Ipsum</div>
+            <div className="text-md text-[#B1C29E] text-end font-semibold">
+              lorem ipsum
+            </div>
+            <div className="text-2xl text-end font-bold TextFont1">
+              Lorem Ipsum
+            </div>
             <div className="text-[12px] text-[#B1C29E] text-end font-semibold">
-              19th February 2025
+              lorem ipsum jui
             </div>
           </div>
-          <div className="overflow-x-auto scrollBar">
-            <div className="flex justify-between items-center gap-5 relative pt-[50px] px-2 mb-5">
-                <div className="w-[100px] h-[100px] overflow-hidden bg-[#EFE3C2] border border-[#fff] rounded-xl p-2">
-                <img src={ps1} alt="" className="w-full h-full object-contain" />
+          <div className="overflow-x-auto mx-auto max-w-[900px] scrollBar md:flex md:justify-center md:items-center md:gap-5 md:px-4">
+            <div className="flex justify-between md:justify-center items-center gap-5 relative pt-[50px] px-2 mb-5">
+              <div className="w-[100px] relative h-[100px] flex justify-center items-center flex-col gap-2 overflow-hidden bg-[#EFE3C2] border border-[#fff] rounded-xl">
+                <div className="w-[100px] relative h-[60px] overflow-hidden rounded-xl">
+                  <img
+                    src={hmimage1}
+                    alt=""
+                    className="w-full h-full object-contain drop-shadow-md"
+                  />
                 </div>
-                <div className="w-[100px] h-[100px] overflow-hidden bg-[#EFE3C2] border border-[#fff] rounded-xl p-2">
-                <img src={ps2} alt="" className="w-full h-full object-contain" />
+                <div className="text-center font-bold text-[10px] leading-tight bottom-1">
+                  100% Organic
                 </div>
-                <div className="w-[100px] h-[100px] overflow-hidden bg-[#EFE3C2] border border-[#fff] rounded-xl p-2">
-                <img src={ps3} alt="" className="w-full h-full object-contain" />
+              </div>
+              <div className="w-[100px] relative h-[100px] flex justify-center items-center flex-col gap-2 overflow-hidden bg-[#EFE3C2] border border-[#fff] rounded-xl">
+                <div className="w-[100px] relative h-[60px] overflow-hidden rounded-xl">
+                  <img
+                    src={hmimage2}
+                    alt=""
+                    className="w-full h-full object-contain drop-shadow-md"
+                  />
                 </div>
+                <div className="text-center font-bold text-[10px] leading-tight bottom-1">
+                  Genuine Product
+                </div>
+              </div>
+              <div className="w-[100px] relative h-[100px] flex justify-center items-center flex-col gap-2 overflow-hidden bg-[#EFE3C2] border border-[#fff] rounded-xl">
+                <div className="w-[100px] relative h-[60px] overflow-hidden rounded-xl">
+                  <img
+                    src={hmimage3}
+                    alt=""
+                    className="w-full h-full object-contain drop-shadow-md"
+                  />
+                </div>
+                <div className="text-center font-bold text-[10px] leading-tight bottom-1">
+                  Quality Guranteed
+                </div>
+              </div>
+            </div>
+            <div className="hidden md:flex md:relative text-[#fff]">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit
+              adipisci corrupti itaque unde, cum reiciendis labore optio fugit
+              pariatur voluptate asperiores perferendis
             </div>
           </div>
-          <div className="px-2 mb-5 relative">
-            <div className="w-full h-[150px] BoxShadow border-[#fff] border rounded-xl bg-[#95CD41] overflow-hidden">
-              <img src={p1} alt="" className="w-full h-full object-cover" />
-            </div>
-          </div>
-          <div className="mb-5 overflow-x-auto scrollBar px-2">
-            <ul className="flex items-center gap-2 font-semibold">
-              <li className="flex justify-center items-center flex-col text-[12px] font-semibold gap-1">
-                <div className="w-[80px] h-[80px] rounded-full bg-[#1A1A19] border-[#00aa0b] border-[2px] overflow-hidden">
-                  <img
-                    src="https://temruk.tomograd-kuban.ru/upload/iblock/f56/j3qqf1g0a0azavswxthterxth7vdr5u2.jpeg"
-                    className="w-full h-full object-cover"
-                    alt=""
-                  />
-                </div>
-                <span className="text-nowrap text-[#00aa0b]">Back Pain</span>
-              </li>
-              <li className="flex justify-center items-center flex-col text-[12px] font-semibold gap-1">
-                <div className="w-[80px] h-[80px] rounded-full bg-[#1A1A19] overflow-hidden">
-                  <img
-                    src="https://s.hdnux.com/photos/76/33/37/16365519/6/rawImage.jpg"
-                    className="w-full h-full object-cover"
-                    alt=""
-                  />
-                </div>
-                <span className="text-nowrap">Weight Loss</span>
-              </li>
-              <li className="flex justify-center items-center flex-col text-[12px] font-semibold gap-1">
-                <div className="w-[80px] h-[80px] rounded-full bg-[#1A1A19] overflow-hidden">
-                  <img
-                    src="https://www.soupstock.in/system/files/images/7a/9e/shutterstock_1444117922.jpg"
-                    className="w-full h-full object-cover"
-                    alt=""
-                  />
-                </div>
-                <span className="text-nowrap">Weight Loss</span>
-              </li>
-              <li className="flex justify-center items-center flex-col text-[12px] font-semibold gap-1">
-                <div className="w-[80px] h-[80px] rounded-full bg-[#1A1A19] overflow-hidden">
-                  <img
-                    src="https://static.mk.ru/upload/entities/2022/01/10/19/articles/facebookPicture/09/47/3d/3b/5ea28e7e01a644a0db554c43e9584a44.jpg"
-                    className="w-full h-full object-cover"
-                    alt=""
-                  />
-                </div>
-                <span className="text-nowrap">Migraine</span>
-              </li>
-              <li className="flex justify-center items-center flex-col text-[12px] font-semibold gap-1">
-                <div className="w-[80px] h-[80px] rounded-full bg-[#1A1A19] overflow-hidden">
-                  <img
-                    src="https://duneego.ru/wp-content/uploads/2022/04/lechenie-sosudistyh-patologiy.jpg"
-                    className="w-full h-full object-cover"
-                    alt=""
-                  />
-                </div>
-                <span className="text-nowrap">Skin Isuues</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
+          {/* banner */}
 
-      <section className="w-full px-2">
-        <div className="w-full flex flex-col gap-2 relative z-20 mb-16">
-          <div className="w-full">
-            <div className="w-full relative flex gap-3 drop-shadow-sm h-[80px] p-1 ProductListBox backdrop-blur-sm rounded-xl border border-[#fff] bg-[#166000]" onClick={() => setOpenPopUp(!openPopUp) }>
-              <div className="w-[70px] h-[70px] rounded-xl border-[#fff] border overflow-hidden p-1">
+          <div className="px-2 mb-3 relative">
+            {banners.length > 1 ? (
+              <Swiper
+                modules={[Pagination, Autoplay]} // ✅ Add Autoplay module
+                pagination={{
+                  clickable: true,
+                  renderBullet: (index, className) => `
+          <span class="${className}" style="background-color: #95CD41; width: 10px; height: 10px; margin-bottom: 10px;"></span>
+        `,
+                }}
+                autoplay={{ delay: 3000, disableOnInteraction: false }} // ✅ Auto-slide every 3 seconds
+                loop={true}
+                className="w-full h-[150px] md:h-auto BoxShadow border-[#fff] border rounded-xl overflow-hidden"
+              >
+                {banners.map((banner) => (
+                  <SwiperSlide key={banner.id}>
+                    <img
+                      src={banner.image}
+                      alt="Banner"
+                      className="w-full h-full object-cover"
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            ) : banners.length === 1 ? (
+              <div className="w-full h-[150px] md:h-auto BoxShadow border-[#fff] border rounded-xl overflow-hidden">
                 <img
-                  src={li1}
-                  alt=""
-                  className="w-full h-full object-contain"
+                  src={banners[0].image}
+                  alt="Banner"
+                  className="w-full h-full object-cover"
                 />
               </div>
-              <div className="flex flex-col gap-1">
-                <div className="text-[#fff] font-medium TextFont1">
-                  Krishna Thulasi Cough Syrup
+            ) : (
+              <p>No active banners</p>
+            )}
+          </div>
+
+          {/* Category */}
+          <div className="px-2 mb-2 text-xl font-bold text-[#396C25] text-center lg:text-3xl">
+            Product Categories
+          </div>
+          <div className="grid grid-cols-2 px-2 gap-2 mb-5">
+            <a href="products">
+              <div className="w-full h-[150px] md:h-[200px] lg:h-[300px] rounded-3xl overflow-hidden relative BoxShadow border border-[#fff]">
+                <div className=" absolute w-full h-full bg-[#06660c48]"></div>
+                <div className="absolute bottom-1 text-[#fff] text-center px-2 w-full md:text-3xl">
+                  Back Pain
                 </div>
-                <div className="text-[#fff] text-xl font-base flex gap-0.5 items-center">
-                  <TbCoinRupee />{" "}
-                  <span className="text-[17px] font-semibold">260</span>
-                </div>
+                <img
+                  src="https://temruk.tomograd-kuban.ru/upload/iblock/f56/j3qqf1g0a0azavswxthterxth7vdr5u2.jpeg"
+                  className="w-full h-full object-cover"
+                  alt=""
+                />
               </div>
-              <div className="absolute right-2 rounded-full bg-[#fff] top-2">
-                <MdOutlineArrowDropDown />
+            </a>
+            <a href="products">
+              <div className="w-full h-[150px] md:h-[200px] lg:h-[300px] rounded-3xl overflow-hidden relative BoxShadow border border-[#fff]">
+                <div className=" absolute w-full h-full bg-[#06660c48]"></div>
+                <div className="absolute bottom-1 text-[#fff] text-center px-2 w-full md:text-3xl">
+                  Weight Loss
+                </div>
+                <img
+                  src="https://s.hdnux.com/photos/76/33/37/16365519/6/rawImage.jpg"
+                  className="w-full h-full object-cover"
+                  alt=""
+                />
+              </div>
+            </a>
+            <div>
+              <div className="w-full h-[150px] md:h-[200px] lg:h-[300px] rounded-3xl overflow-hidden relative BoxShadow border border-[#fff]">
+                <div className=" absolute w-full h-full bg-[#06660c48]"></div>
+                <div className="absolute bottom-1 text-[#fff] text-center px-2 w-full md:text-3xl">
+                  Knee Pain
+                </div>
+                <img
+                  src="https://www.soupstock.in/system/files/images/7a/9e/shutterstock_1444117922.jpg"
+                  className="w-full h-full object-cover"
+                  alt=""
+                />
               </div>
             </div>
-          </div>
-          <div className="w-full">
-            <div className="w-full relative flex gap-3 drop-shadow-sm h-[80px] p-1 ProductListBox backdrop-blur-sm rounded-xl border border-[#fff] bg-[#166000]" onClick={() => setOpenPopUp(!openPopUp) }>
-              <div className="w-[70px] h-[70px] rounded-xl border-[#fff] border overflow-hidden p-1">
+            <a href="products">
+              <div className="w-full h-[150px] md:h-[200px] lg:h-[300px] rounded-3xl overflow-hidden relative BoxShadow border border-[#fff]">
+                <div className=" absolute w-full h-full bg-[#06660c48]"></div>
+                <div className="absolute bottom-1 text-[#fff] text-center px-2 w-full md:text-3xl">
+                  Migraine
+                </div>
                 <img
-                  src={li4}
+                  src="https://static.mk.ru/upload/entities/2022/01/10/19/articles/facebookPicture/09/47/3d/3b/5ea28e7e01a644a0db554c43e9584a44.jpg"
+                  className="w-full h-full object-cover"
                   alt=""
-                  className="w-full h-full object-contain"
                 />
               </div>
-              <div className="flex flex-col gap-1">
-                <div className="text-[#fff] font-medium TextFont1">
-                  Khadi Natural Hair Oil
+            </a>
+            <a href="products">
+              <div className="w-full h-[150px] md:h-[200px] lg:h-[300px] rounded-3xl overflow-hidden relative BoxShadow border border-[#fff]">
+                <div className=" absolute w-full h-full bg-[#06660c48]"></div>
+                <div className="absolute bottom-1 text-[#fff] text-center px-2 w-full md:text-3xl">
+                  Skin Issues
                 </div>
-                <div className="text-[#fff] text-xl font-base flex gap-0.5 items-center">
-                  <TbCoinRupee />{" "}
-                  <span className="text-[17px] font-semibold">280</span>
+                <img
+                  src="https://duneego.ru/wp-content/uploads/2022/04/lechenie-sosudistyh-patologiy.jpg"
+                  className="w-full h-full object-cover"
+                  alt=""
+                />
+              </div>
+            </a>
+            <a href="products">
+              <div className="w-full h-[150px] md:h-[200px] lg:h-[300px] rounded-3xl overflow-hidden relative BoxShadow border border-[#fff]">
+                <div className=" absolute w-full h-full bg-[#06660c48]"></div>
+                <span className="text-5xl md:text-8xl relative flex justify-center items-center h-full">
+                  <IoRefreshCircleSharp className="border border-[#fff] rounded-full" />
+                </span>
+                <div className="absolute bottom-1 text-[#fff] text-center px-2 w-full md:text-3xl">
+                  See More
                 </div>
               </div>
-              <div className="absolute right-2 rounded-full bg-[#fff] top-2">
-                <MdOutlineArrowDropDown />
-              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+      {/* Footer */}
+      <section className="w-full flex flex-col justify-center items-center bg-[#000000] h-auto mb-[53px]">
+        <div className="bg-gradient-to-r from-[#8d8d8d] via-[#ffffff] to-[#3E7B27] pt-[5px]  backdrop-blur-3xl">
+          <div className="w-full h-full `rounded-[calc(1.5rem-1px)] bg-[#000] py-5">
+            <div className="text-center font-bold text-lg text-[#fff]">
+              Vythiri Care
             </div>
-          </div>
-          <div className="w-full">
-            <div className="w-full relative flex gap-3 drop-shadow-sm h-[80px] p-1 ProductListBox backdrop-blur-sm rounded-xl border border-[#fff] bg-[#166000]" onClick={() => setOpenPopUp(!openPopUp) }>
-              <div className="w-[70px] h-[70px] rounded-xl border-[#fff] border overflow-hidden p-1">
-                <img
-                  src={li3}
-                  alt=""
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <div className="text-[#fff] font-medium TextFont1">
-                  Indhulekha Brinka Hair Oil
-                </div>
-                <div className="text-[#fff] text-xl font-base flex gap-0.5 items-center">
-                  <TbCoinRupee />{" "}
-                  <span className="text-[17px] font-semibold">260</span>
-                </div>
-              </div>
-              <div className="absolute right-2 rounded-full bg-[#fff] top-2">
-                <MdOutlineArrowDropDown />
-              </div>
-            </div>
-          </div>
-          <div className="w-full">
-            <div className="w-full relative flex gap-3 drop-shadow-sm h-[80px] p-1 ProductListBox backdrop-blur-sm rounded-xl border border-[#fff] bg-[#166000]" onClick={() => setOpenPopUp(!openPopUp) }>
-              <div className="w-[70px] h-[70px] rounded-xl border-[#fff] border overflow-hidden p-1">
-                <img
-                  src={li2}
-                  alt=""
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <div className="text-[#fff] font-medium TextFont1">
-                  COFOL Syrup
-                </div>
-                <div className="text-[#fff] text-xl font-base flex gap-0.5 items-center">
-                  <TbCoinRupee />{" "}
-                  <span className="text-[17px] font-semibold">260</span>
-                </div>
-              </div>
-              <div className="absolute right-2 rounded-full bg-[#fff] top-2">
-                <MdOutlineArrowDropDown />
-              </div>
+            <div className="text-center px-2 text-[13px] text-[#fff]">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam
+              consequatur corrupti nulla fugiat fuga labore aspernatur ipsam hic
+              sequi cum
             </div>
           </div>
         </div>
       </section>
-      {openPopUp && <PopUp openPopUp={openPopUp} setOpenPopUp={setOpenPopUp} />}
     </div>
   );
 };

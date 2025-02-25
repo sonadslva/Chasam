@@ -8,9 +8,7 @@
     font-family: 'textFont1';
     src: url('./fonts/Nexa-ExtraLight.ttf');
 }
-*{
-    font-family: 'textFont1';
-}
+
 .TextFont1{
     font-family: 'textFont';
 }
@@ -33,7 +31,7 @@
     background: linear-gradient(120deg, #3e7b27 0%, #4da02e, #114000 100%);
 }
 .popUpBg{
-    background: linear-gradient(0deg, rgba(137,255,95,0.9024859943977591) 0%, rgba(191,255,167,1) 32%, rgba(245,255,241,1) 100%);
+    background: linear-gradient(90deg, rgba(250,246,227,1) 0%, rgba(255,250,236,1) 100%);
 }
 .TextFont{
     font-family: 'textFont';
