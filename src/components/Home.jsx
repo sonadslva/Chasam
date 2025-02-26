@@ -91,41 +91,41 @@ const Home = () => {
             Authentic Ayurvedic & Spice Products
             </div>
           </div>
-          <div className="overflow-x-auto mx-auto max-w-[900px] scrollBar md:flex md:justify-center md:items-center md:gap-5 md:px-4">
+          <div className="overflow-x-auto mx-auto max-w-[1400px] scrollBar md:flex md:justify-center md:items-center md:gap-5 md:px-4">
             <div className="flex justify-between md:justify-center items-center gap-5 relative pt-[50px] px-2 mb-5">
-              <div className="w-[100px] relative h-[100px] flex justify-center items-center flex-col gap-2 overflow-hidden bg-[#EFE3C2] border border-[#fff] rounded-xl">
-                <div className="w-[100px] relative h-[60px] overflow-hidden rounded-xl">
+              <div className="w-[100px] relative h-[100px] flex justify-center items-center flex-col gap-2 overflow-hidden bg-[#EFE3C2] border border-[#fff] rounded-xl HeaderElements">
+                <div className="w-[100px] HeaderElementsimg relative h-[60px]  overflow-hidden rounded-xl">
                   <img
                     src={hmimage1}
                     alt=""
                     className="w-full h-full object-contain drop-shadow-md"
                   />
                 </div>
-                <div className="text-center font-bold text-[10px] leading-tight bottom-1">
+                <div className="text-center font-bold text-[10px] leading-tight bottom-1 HeaderElementstext">
                   100% Organic
                 </div>
               </div>
-              <div className="w-[100px] relative h-[100px] flex justify-center items-center flex-col gap-2 overflow-hidden bg-[#EFE3C2] border border-[#fff] rounded-xl">
-                <div className="w-[100px] relative h-[60px] overflow-hidden rounded-xl">
+              <div className="w-[100px] relative h-[100px] HeaderElements flex justify-center items-center flex-col gap-2 overflow-hidden bg-[#EFE3C2] border border-[#fff] rounded-xl">
+                <div className="w-[100px] HeaderElementsimg relative h-[60px] overflow-hidden rounded-xl">
                   <img
                     src={hmimage2}
                     alt=""
                     className="w-full h-full object-contain drop-shadow-md"
                   />
                 </div>
-                <div className="text-center font-bold text-[10px] leading-tight bottom-1">
+                <div className="text-center font-bold text-[10px] leading-tight bottom-1 HeaderElementstext">
                   Genuine Product
                 </div>
               </div>
-              <div className="w-[100px] relative h-[100px] flex justify-center items-center flex-col gap-2 overflow-hidden bg-[#EFE3C2] border border-[#fff] rounded-xl">
-                <div className="w-[100px] relative h-[60px] overflow-hidden rounded-xl">
+              <div className="w-[100px] relative h-[100px] HeaderElements flex justify-center items-center flex-col gap-2 overflow-hidden bg-[#EFE3C2] border border-[#fff] rounded-xl">
+                <div className="w-[100px] HeaderElementsimg relative h-[60px] overflow-hidden rounded-xl">
                   <img
                     src={hmimage3}
                     alt=""
                     className="w-full h-full object-contain drop-shadow-md"
                   />
                 </div>
-                <div className="text-center font-bold text-[10px] leading-tight bottom-1">
+                <div className="text-center font-bold text-[10px] leading-tight bottom-1 HeaderElementstext">
                   Quality Guranteed
                 </div>
               </div>
@@ -133,7 +133,7 @@ const Home = () => {
             <div className="hidden md:flex md:relative text-[#fff]">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit
               adipisci corrupti itaque unde, cum reiciendis labore optio fugit
-              pariatur voluptate asperiores perferendis
+              pariatur voluptate asperiores perferendis Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit exercitationem doloremque deleniti ut pariatur fugiat maxime magni, explicabo tenetur iusto libero, odit a vel officia tempore in amet earum! Laudantium!
             </div>
           </div>
           {/* banner */}
@@ -211,13 +211,13 @@ const Home = () => {
         </div>
       </section>
       {/* Footer */}
-      <section className="w-full flex flex-col justify-center items-center bg-[#000000] h-auto mb-[53px]">
-        <div className="bg-gradient-to-r from-[#8d8d8d] via-[#ffffff] to-[#3E7B27] pt-[5px]  backdrop-blur-3xl">
+      <section className="w-full flex flex-col justify-center items-center bg-[#000000] h-auto mb-[53px] lg:mb-[90px]">
+        <div className="bg-gradient-to-r w-full from-[#8d8d8d] via-[#ffffff] to-[#3E7B27] pt-[5px]  backdrop-blur-3xl">
           <div className="w-full h-full `rounded-[calc(1.5rem-1px)] bg-[#000] py-5">
-            <div className="text-center font-bold text-lg text-[#fff]">
+            <div className="text-center font-bold text-lg text-[#fff] lg:text-4xl lg:mb-2">
               Vythiri Care
             </div>
-            <div className="text-center px-2 text-[13px] text-[#fff]">
+            <div className="text-center px-2 text-[13px] text-[#fff] lg:text-xl">
               Chasam Ayurvedic & Spices Garden Shop in Wayanad is one of the
               leading businesses in the Spice Retailers. 
             </div>

@@ -39,3 +39,51 @@
 .scrollBar::-webkit-scrollbar{
     display: none;
 }
+@media screen and (min-width : 1600px) {
+    .BannerCircle{
+        width: 2000px;
+        height: 2000px;
+        top: -1000px;
+      }
+      .BannerCircle2{
+        width: 2000px;
+        height: 2000px;
+        top: -980px;
+      }
+      .HeaderElements{
+        width: 200px;
+        height: 200px;
+      }
+      .HeaderElementsimg{
+        width: 200px;
+        height: 130px;
+      }
+      .HeaderElementstext{
+        font-size: 20px;
+      }
+  }
+
+  @media screen and (min-width : 1700px) {
+    .BannerCircle{
+        width: 2200px;
+        height: 2200px;
+        top: -1200px;
+      }
+      .BannerCircle2{
+        width: 2200px;
+        height: 2200px;
+        top: -1160px;
+      }
+  }
+  @media screen and (min-width : 1800px) {
+    .BannerCircle{
+        width: 2400px;
+        height: 2400px;
+        top: -1300px;
+      }
+      .BannerCircle2{
+        width: 2400px;
+        height: 2400px;
+        top: -1160px;
+      }
+  }

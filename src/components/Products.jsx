@@ -170,8 +170,8 @@ const Products = () => {
       {/* top section */}
       <section className="relative overflow-hidden">
         <div>
-          <div className="w-[600px] z-0 absolute h-[600px] rounded-full top-[-290px] bgGradient overflow-hidden"></div>
-          <div className="w-[600px] -z-10 absolute h-[600px] rounded-full top-[-270px] bgGradient opacity-30 "></div>
+        <div className="w-[600px] md:w-[1200px] md:h-[1200px] lg:w-[1600px] lg:h-[1600px] BannerCircle lg:top-[-900px] z-0 absolute h-[600px] rounded-full md:top-[-550px] top-[-290px] bgGradient overflow-hidden"></div>
+        <div className="w-[600px] md:w-[1200px] md:h-[1200px] -z-10 absolute h-[600px] BannerCircle2 rounded-full top-[-270px] lg:top-[-880px] md:top-[-520px] bgGradient opacity-30 "></div>
           <div className=" absolute w-[100px] h-[100px] rotate-90 left-[-10px] drop-shadow-md">
             <img src={leaft2} alt="" />
           </div>
@@ -227,9 +227,9 @@ const Products = () => {
           </div>
 
           {/* search */}
-          <div className="px-2 w-full mb-3">
+          <div className="px-2 w-full mb-3 max-w-[1200px] mx-auto">
             <div className="bg-gradient-to-r from-[#13c200] via-[#7eff87] to-[#006000] rounded-3xl p-[1px]">
-              <div className="relative w-full flex justify- items-center bg-[#fff] py-3 rounded-3xl">
+              <div className="relative w-full flex justify- items-center bg-[#fff] py-3 lg:py-4 rounded-3xl">
                 <input
                   type="text"
                   placeholder="Search Product..."
@@ -246,7 +246,7 @@ const Products = () => {
 
           {/* category */}
           <div className="mb-5 overflow-x-auto relative scrollBar px-2">
-            <ul className="flex items-center gap-2 font-semibold">
+            <ul className="flex items-center lg:justify-center gap-2 font-semibold">
               {/* Add ALL option */}
               <li
                 className="flex justify-center items-center flex-col text-[12px] font-semibold gap-1 cursor-pointer"
@@ -312,7 +312,7 @@ const Products = () => {
 
       {/* product list */}
       <section className="w-full px-2 mb-16">
-        <div className="w-full flex flex-col gap-2 relative z-20 mb-2">
+        <div className="w-full flex flex-col md:grid md:grid-cols-2 gap-2 relative z-20 mb-2">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <div key={product.id} className="w-full">
