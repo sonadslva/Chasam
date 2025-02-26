@@ -122,9 +122,11 @@ const ProductPage = () => {
 
         alert("Product added successfully!");
       }
-
+      resetForm();
       setShowForm(false);
       setEditMode(false);
+      setSelectedImages(false);
+      setImagePreview(false)
       setSelectedProduct(null);
       setProductData({
         name: "",
@@ -166,6 +168,7 @@ const ProductPage = () => {
     setEditMode(true);
     setShowForm(true);
     setShowProducts(false);
+
   };
   const [selectedImages, setSelectedImages] = useState([]);
 
@@ -290,6 +293,30 @@ const ProductPage = () => {
       };
     });
   };
+  const resetForm = () => {
+    // Reset image previews and file names
+    setSelectedImages([]);
+    setFileNames([]);
+    setImagePreview(null);
+    setFileName("");
+    
+    // Reset all input fields
+    setProductData({
+      name: "",
+      category: "",
+      price: "",
+      purpose: "",
+      description: "",
+      usage: "",
+      netQty: "",
+      images: [],
+      bgImage: "",
+    });
+    
+    // Reset edit mode and selected product
+    setEditMode(false);
+    setSelectedProduct(null);
+  };
   return (
     <div className="min-h-screen w-full relative">
       <div
@@ -340,6 +367,7 @@ const ProductPage = () => {
                 setShowForm(!showForm);
                 setShowProducts(false);
                 if (!showForm) {
+                  resetForm();
                   setEditMode(false);
                   setSelectedProduct(null);
                   setProductData({
@@ -367,6 +395,8 @@ const ProductPage = () => {
               onClick={() => {
                 setShowProducts(!showProducts);
                 setShowForm(false);
+                setSelectedImages(false);
+                resetForm();
               }}
             >
               <div className="bg-[#000] absolute inset-0 w-full h-full -z-0 mix-blend-multiply opacity-30 rounded-3xl"></div>
@@ -474,7 +504,7 @@ const ProductPage = () => {
               />
               <textarea
                 name="description"
-                placeholder="Enter description (Use ',' to separate bullet points)"
+                placeholder="Enter description"
                 value={productData.description}
                 onChange={handleChange}
                 className="w-full border p-2 rounded-lg mb-2 bg-white"
@@ -509,6 +539,7 @@ const ProductPage = () => {
                     setShowForm(false);
                     setEditMode(false);
                     setSelectedProduct(null);
+                    resetForm();
                   }}
                 >
                   Cancel
@@ -585,13 +616,7 @@ const ProductPage = () => {
                         <td className="p-2">${product.price}</td>
                         <td className="p-2 max-w-[200px]">
                           <div className="truncate">
-                            {product.description
-                              ?.split(",")
-                              .map((item, index) => (
-                                <div key={index} className="text-sm">
-                                  • {item.trim()}
-                                </div>
-                              ))}
+                            {product.description}
                           </div>
                         </td>
                         <td className="p-2">{product.purpose}</td>

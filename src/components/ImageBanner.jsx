@@ -104,20 +104,20 @@ const ImageBanner = () => {
       <div className="absolute inset-0 bg-cover bg-center opacity-60" style={{ backgroundImage: `url(${imgbgb})` }} />
       <div className="relative z-10">
         <div className="flex h-auto">
-          <div className={`fixed top-0 left-0 h-full bg-[#00000007] backdrop-blur-sm shadow-lg w-14 transition-transform ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}>
+          <div className={`fixed top-0 z-[998] left-0 h-full bg-[#00000007] backdrop-blur-sm shadow-lg w-14 transition-transform ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}>
             <AdminNav closeMenu={() => setMenuOpen(false)} />
           </div>
 
           <div className="flex flex-1 items-center w-full">
-            <div className="flex items-center bg-transparent py-4 px-0 fixed top-0 w-full">
+            <div className="flex items-center bg-transparent py-4 px-0 fixed top-0 w-full z-[999]">
               <button className="menu-btn text-3xl p-4 focus:outline-none" onClick={toggleMenu}>
                 <FaEllipsisV className="text-white" />
               </button>
               <div className="ml-[-5px] flex justify-center">
                 <img src={logo} alt="Logo" className="w-14" />
               </div>
-              <div className="flex justify-center ml-auto text-2xl" onClick={handleLogout}>
-                <IoMdLogOut className="text-white" />
+              <div className="flex justify-center ml-55 text-2xl" onClick={handleLogout}>
+                <IoMdLogOut className="text-white text-3xl" />
               </div>
             </div>
           </div>
@@ -136,7 +136,7 @@ const ImageBanner = () => {
                   setShowBanners(false);
                 }}
               >
-                <div className="bg-black absolute inset-0 w-full h-full opacity-30"></div>
+                <div className="bg-black absolute inset-0 w-full h-full opacity-30 rounded-3xl"></div>
                 <button className="text-white relative px-6 py-3 text-2xl font-black">
                   ADD BANNER
                 </button>
@@ -150,7 +150,7 @@ const ImageBanner = () => {
                   setShowForm(false);
                 }}
               >
-                <div className="bg-black absolute inset-0 w-full h-full opacity-30"></div>
+                <div className="bg-black absolute inset-0 w-full h-full opacity-30 rounded-3xl"></div>
                 <button className="text-white relative px-6 py-3 text-2xl font-black">
                   VIEW BANNERS
                 </button>

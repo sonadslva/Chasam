@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useActionState } from "react";
+import React, { useState, useEffect } from "react";
 import p1 from "../assets/p1.jpg";
 import leaft2 from "../assets/leaf2.png";
 import PopUp from "./PopUp";
@@ -10,17 +10,15 @@ import { collection, getDocs } from "firebase/firestore";
 import { ref, push, onValue } from "firebase/database";
 import { dbRealtime } from "../firebaseConfig"; 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination,Autoplay } from "swiper/modules";
+import { Pagination, Autoplay } from "swiper/modules";
+import { Link, useNavigate } from "react-router-dom";
 import "swiper/css";
 import "swiper/css/pagination";
-const Home = () => {
+import { getDatabase } from "firebase/database";
 
-  const categoryLists = [
-    {name : "Back Pain", img : "https://temruk.tomograd-kuban.ru/upload/iblock/f56/j3qqf1g0a0azavswxthterxth7vdr5u2.jpeg"},
-    {name : "Weight Loss", img : "https://s.hdnux.com/photos/76/33/37/16365519/6/rawImage.jpg" },
-    {name : "Back Pain", img : "https://temruk.tomograd-kuban.ru/upload/iblock/f56/j3qqf1g0a0azavswxthterxth7vdr5u2.jpeg"},{name : "Back Pain", img : "https://temruk.tomograd-kuban.ru/upload/iblock/f56/j3qqf1g0a0azavswxthterxth7vdr5u2.jpeg"},{name : "Back Pain", img : "https://temruk.tomograd-kuban.ru/upload/iblock/f56/j3qqf1g0a0azavswxthterxth7vdr5u2.jpeg"},
-  ]
+const Home = () => {
   const [banners, setBanners] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const bannerRef = ref(dbRealtime, "banners");
@@ -40,6 +38,30 @@ const Home = () => {
 
     return () => unsubscribe(); // ✅ Cleanup on unmount
   }, []);
+
+  //fetch categories
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const db = getDatabase();
+    const categoriesRef = ref(db, "categories");
+
+    onValue(categoriesRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const categoriesArray = Object.keys(data).map((key) => ({
+          id: key,
+          ...data[key],
+        }));
+        setCategories(categoriesArray);
+      }
+    });
+  }, []);
+
+  // Handle category click to navigate with category ID
+  const handleCategoryClick = (categoryId) => {
+    navigate(`/products?category=${categoryId}`);
+  };
 
   return (
     <div className="overflow-hidden relative w-full">
@@ -153,78 +175,29 @@ const Home = () => {
           </div>
 
           {/* Category */}
-          <div className="px-2 mb-2 text-xl font-bold text-[#396C25] text-center lg:text-3xl">
-            Product Categories
-          </div>
           <div className="grid grid-cols-2 px-2 gap-2 mb-5">
-            <a href="products">
-              <div className="w-full h-[150px] md:h-[200px] lg:h-[300px] rounded-3xl overflow-hidden relative BoxShadow border border-[#fff]">
-                <div className=" absolute w-full h-full bg-[#06660c48]"></div>
-                <div className="absolute bottom-1 text-[#fff] text-center px-2 w-full md:text-3xl">
-                  Back Pain
+            {categories.map((category) => (
+              <div
+                key={category.id}
+                onClick={() => handleCategoryClick(category.id)}
+                className="cursor-pointer"
+              >
+                <div className="w-full h-[150px] md:h-[200px] lg:h-[300px] rounded-3xl overflow-hidden relative BoxShadow border border-[#fff]">
+                  <div className="absolute w-full h-full bg-[#06660c48]"></div>
+                  <div className="absolute bottom-1 text-[#fff] text-center px-2 w-full md:text-3xl">
+                    {category.name}
+                  </div>
+                  <img
+                    src={category.image || "default-image-url.jpg"}
+                    className="w-full h-full object-cover"
+                    alt={category.name}
+                  />
                 </div>
-                <img
-                  src="https://temruk.tomograd-kuban.ru/upload/iblock/f56/j3qqf1g0a0azavswxthterxth7vdr5u2.jpeg"
-                  className="w-full h-full object-cover"
-                  alt=""
-                />
               </div>
-            </a>
-            <a href="products">
+            ))}
+            <Link to="/products">
               <div className="w-full h-[150px] md:h-[200px] lg:h-[300px] rounded-3xl overflow-hidden relative BoxShadow border border-[#fff]">
-                <div className=" absolute w-full h-full bg-[#06660c48]"></div>
-                <div className="absolute bottom-1 text-[#fff] text-center px-2 w-full md:text-3xl">
-                  Weight Loss
-                </div>
-                <img
-                  src="https://s.hdnux.com/photos/76/33/37/16365519/6/rawImage.jpg"
-                  className="w-full h-full object-cover"
-                  alt=""
-                />
-              </div>
-            </a>
-            <div>
-              <div className="w-full h-[150px] md:h-[200px] lg:h-[300px] rounded-3xl overflow-hidden relative BoxShadow border border-[#fff]">
-                <div className=" absolute w-full h-full bg-[#06660c48]"></div>
-                <div className="absolute bottom-1 text-[#fff] text-center px-2 w-full md:text-3xl">
-                  Knee Pain
-                </div>
-                <img
-                  src="https://www.soupstock.in/system/files/images/7a/9e/shutterstock_1444117922.jpg"
-                  className="w-full h-full object-cover"
-                  alt=""
-                />
-              </div>
-            </div>
-            <a href="products">
-              <div className="w-full h-[150px] md:h-[200px] lg:h-[300px] rounded-3xl overflow-hidden relative BoxShadow border border-[#fff]">
-                <div className=" absolute w-full h-full bg-[#06660c48]"></div>
-                <div className="absolute bottom-1 text-[#fff] text-center px-2 w-full md:text-3xl">
-                  Migraine
-                </div>
-                <img
-                  src="https://static.mk.ru/upload/entities/2022/01/10/19/articles/facebookPicture/09/47/3d/3b/5ea28e7e01a644a0db554c43e9584a44.jpg"
-                  className="w-full h-full object-cover"
-                  alt=""
-                />
-              </div>
-            </a>
-            <a href="products">
-              <div className="w-full h-[150px] md:h-[200px] lg:h-[300px] rounded-3xl overflow-hidden relative BoxShadow border border-[#fff]">
-                <div className=" absolute w-full h-full bg-[#06660c48]"></div>
-                <div className="absolute bottom-1 text-[#fff] text-center px-2 w-full md:text-3xl">
-                  Skin Issues
-                </div>
-                <img
-                  src="https://duneego.ru/wp-content/uploads/2022/04/lechenie-sosudistyh-patologiy.jpg"
-                  className="w-full h-full object-cover"
-                  alt=""
-                />
-              </div>
-            </a>
-            <a href="products">
-              <div className="w-full h-[150px] md:h-[200px] lg:h-[300px] rounded-3xl overflow-hidden relative BoxShadow border border-[#fff]">
-                <div className=" absolute w-full h-full bg-[#06660c48]"></div>
+                <div className="absolute w-full h-full bg-[#06660c48]"></div>
                 <span className="text-5xl md:text-8xl relative flex justify-center items-center h-full">
                   <IoRefreshCircleSharp className="border border-[#fff] rounded-full" />
                 </span>
@@ -232,7 +205,7 @@ const Home = () => {
                   See More
                 </div>
               </div>
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -244,9 +217,8 @@ const Home = () => {
               Vythiri Care
             </div>
             <div className="text-center px-2 text-[13px] text-[#fff]">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam
-              consequatur corrupti nulla fugiat fuga labore aspernatur ipsam hic
-              sequi cum
+              Chasam Ayurvedic & Spices Garden Shop in Wayanad is one of the
+              leading businesses in the Spice Retailers. 
             </div>
           </div>
         </div>

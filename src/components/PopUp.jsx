@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import li1 from "../assets/li1.png";
 import { FaChevronCircleLeft } from "react-icons/fa";
 import { MdCurrencyRupee } from "react-icons/md";
@@ -6,14 +6,117 @@ import { HiOutlineMail } from "react-icons/hi";
 import { MdLocalPhone } from "react-icons/md";
 import { LuDot } from "react-icons/lu";
 import { motion } from "framer-motion";
-import { CiCircleMore } from "react-icons/ci";
 import { FiPlus } from "react-icons/fi";
+import { ref, onValue } from "firebase/database";
+import { dbRealtime } from "../firebaseConfig";
+// Add missing imports for the chevron icons
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { div } from "framer-motion/client";
+import { FiMinus } from "react-icons/fi";
 
-const PopUp = ({ openPopUp, setOpenPopUp }) => {
+const PopUp = ({ openPopUp, setOpenPopUp, productId }) => {
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [showOtherDetails, setShowOtherDetails] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  // Define productImages state
+  const [productImages, setProductImages] = useState([]);
+  const [bgImage, setBgImage] = useState(null); 
+
+  // Fetch product data from Firebase
+useEffect(() => {
+  if (!productId) return;
+  setLoading(true);
+  
+  const productRef = ref(dbRealtime, `products/${productId}`);
+
+  const unsubscribe = onValue(productRef, (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      setProduct({
+        id: productId,
+        ...data
+      });
+      
+      // Set background image
+      if (data.bgImage) {
+        setBgImage(data.bgImage);
+      }
+      
+      // For debugging - log the data structure
+      console.log("Product data:", data);
+      
+      // Extract images array 
+      let imagesArray = [];
+      
+      // Check if there's an images object/array
+      if (data.images) {
+        if (typeof data.images === 'object' && !Array.isArray(data.images)) {
+          // If images is a Firebase object with keys
+          imagesArray = Object.values(data.images).filter(img => img && typeof img === 'string');
+        } else if (Array.isArray(data.images)) {
+          // If images is already an array
+          imagesArray = data.images.filter(img => img && typeof img === 'string');
+        }
+      }
+      
+      // If no images found but there's a single image property
+      if (imagesArray.length === 0 && data.image && typeof data.image === 'string') {
+        imagesArray = [data.image];
+      }
+      
+      console.log("Images array:", imagesArray);
+      setProductImages(imagesArray);
+    } else {
+      setProduct(null);
+      setProductImages([]);
+      setBgImage(null);
+    }
+    setLoading(false);
+  });
+  
+  return () => unsubscribe();
+}, [productId]);
+
+  // Function to navigate to the next image
+  const nextImage = () => {
+    if (productImages.length <= 1) return;
+    setCurrentIndex((prevIndex) => 
+      prevIndex === productImages.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  // Function to navigate to the previous image
+  const prevImage = () => {
+    if (productImages.length <= 1) return;
+    setCurrentIndex((prevIndex) => 
+      prevIndex === 0 ? productImages.length - 1 : prevIndex - 1
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="fixed top-0 bottom-0 left-0 right-0 bg-[#178000] z-[999] flex justify-center items-center">
+        <div className="bg-white p-6 rounded-lg">
+          <p>Loading product details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="fixed top-0 bottom-0 left-0 right-0 bg-[#178000] z-[999] flex justify-center items-center">
+        <div className="bg-white p-6 rounded-lg">
+          <p>Product not found</p>
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 bg-[#178000] z-[999]">
-      <div className=" absolute w-full bottom-0 py-2 bg-[#fff] z-[999] flex justify-center items-center gap-5 BoxShadow">
+      <div className="absolute w-full bottom-0 py-2 bg-[#fff] z-[999] flex justify-center items-center gap-5 BoxShadow">
         <button className="TextFont BoxShadow font-semibold px-10 py-2 rounded-lg bg-[#178000] text-[#fff] flex items-center gap-1 text-sm">
           <HiOutlineMail />
           Mail Us
@@ -34,147 +137,168 @@ const PopUp = ({ openPopUp, setOpenPopUp }) => {
           className="fixed w-[95%] mx-auto top-2 bottom-0 rounded-t-3xl z-[998] popUpBg bg-[#fff] backdrop-blur-sm overflow-y-auto scrollBar"
         >
           <div>
-            <img src="" alt="" />
-          </div>
-          <div>
             <div className="flex pt-4 pl-4 mb-5">
               <span
-                className="bg-[#093] p-1 rounded-full text-[#fff] text-xl"
-                onClick={() => setOpenPopUp(!openPopUp)}
+                className="bg-[#0000] p-1 rounded-full text-[#178000] text-xl"
+                onClick={() => setOpenPopUp(false)}
               >
                 <FaChevronCircleLeft />
               </span>
             </div>
-            {/* Images */}
-            <div className="overflow-x-auto w-full scrollBar px-2">
-              <div className="flex gap-2 mb-3 w-max whitespace-nowrap">
-                <div className="w-[300px] flex justify-center items-center p-2 rounded-3xl h-[300px] backdrop-blur-sm bg-[#02842f2c] mb-2 BoxShadow border-[#fff] border relative overflow-hidden">
-                  <div className="w-full h-[300px] absolute">
-                    <img
-                      src="https://i.pinimg.com/736x/b5/83/f8/b583f8122ce56da166e1cd9e5404fea0.jpg"
-                      alt=""
-                      className="w-full h-full object-cover opacity-90"
-                    />
-                  </div>
-                  <div className="w-auto h-[250px] flex justify-center items-center">
-                    <img
-                      src={li1}
-                      alt=""
-                      className="w-full h-full object-contain drop-shadow-md"
-                    />
-                  </div>
-                </div>
-                <div className="w-[300px] flex justify-center items-center p-2 rounded-3xl h-[300px] backdrop-blur-sm bg-[#02842f2c] mb-2 BoxShadow border-[#fff] border relative overflow-hidden">
-                  <div className="w-full h-[300px] absolute">
-                    <img
-                      src="https://i.pinimg.com/736x/b5/83/f8/b583f8122ce56da166e1cd9e5404fea0.jpg"
-                      alt=""
-                      className="w-full h-full object-cover opacity-90"
-                    />
-                  </div>
-                  <div className="w-auto h-[250px] flex justify-center items-center">
-                    <img
-                      src={li1}
-                      alt=""
-                      className="w-full h-full object-contain drop-shadow-md"
-                    />
-                  </div>
-                </div>
+
+            {/* Main Image Slider */}
+            <div className="w-full flex justify-center items-center p-2 rounded-3xl h-[300px] backdrop-blur-sm bg-[#02842f2c] mb-2 BoxShadow border-[#fff] border relative overflow-hidden">
+              {/* Background Image */}
+              <div className="w-full h-[300px] absolute">
+                <img
+                  src={bgImage || product.bgImage || ""}
+                  alt="Background"
+                  className="w-full h-full object-cover opacity-90"
+                />
               </div>
+
+              {/* Product Image */}
+              {productImages.length > 0 ? (
+                <div className="w-auto h-[250px] flex justify-center items-center z-10">
+                  <img
+                    src={productImages[currentIndex]}
+                    alt={`${product.name || "Product"} - Image ${
+                      currentIndex + 1
+                    }`}
+                    className="w-full h-full object-contain drop-shadow-md"
+                  />
+                </div>
+              ) : (
+                <div className="w-auto h-[250px] flex justify-center items-center z-10">
+                  <img
+                    src={li1}
+                    alt="Default Product"
+                    className="w-full h-full object-contain drop-shadow-md"
+                  />
+                </div>
+              )}
+
+              {/* Navigation Arrows - Only show if multiple images */}
+              {productImages.length > 1 && (
+                <>
+                  <button
+                    onClick={prevImage}
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 bg-green-600 text-white rounded-full p-2 opacity-80 hover:opacity-100"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+
+                  <button
+                    onClick={nextImage}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 bg-green-600 text-white rounded-full p-2 opacity-80 hover:opacity-100"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                </>
+              )}
+
+              {/* Pagination Indicators - Only show if multiple images */}
+              {productImages.length > 1 && (
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 z-20">
+                  {productImages.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentIndex(index)}
+                      className={`w-2 h-2 rounded-full ${
+                        currentIndex === index ? "bg-white" : "bg-gray-400"
+                      }`}
+                      aria-label={`Go to image ${index + 1}`}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Sub Images */}
-            <div className="overflow-x-auto w-full scrollBar px-2">
-              <div className="flex gap-2 mb-3 w-max">
-                <div className="w-[100px] h-[100px] p-2 bg-[#fff] shadow-2xl">
-                  <img
-                    src={li1}
-                    alt=""
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <div className="w-[100px] h-[100px] p-2 bg-[#fff] shadow-2xl">
-                  <img
-                    src={li1}
-                    alt=""
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <div className="w-[100px] h-[100px] p-2 bg-[#fff] shadow-2xl">
-                  <img
-                    src={li1}
-                    alt=""
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <div className="w-[100px] h-[100px] p-2 bg-[#fff] shadow-2xl">
-                  <img
-                    src={li1}
-                    alt=""
-                    className="w-full h-full object-contain"
-                  />
+            {/* Thumbnail Navigation */}
+            {productImages.length > 1 && (
+              <div className="overflow-x-auto w-full scrollBar px-2">
+                <div className="flex gap-2 mb-3 w-max">
+                  {productImages.map((image, index) => (
+                    <div
+                      key={index}
+                      onClick={() => setCurrentIndex(index)}
+                      className={`w-[100px] h-[100px] p-2 bg-[#fff] shadow-2xl rounded-md cursor-pointer ${
+                        currentIndex === index ? "ring-2 ring-green-600" : ""
+                      }`}
+                    >
+                      <img
+                        src={image}
+                        alt={`Thumbnail ${index + 1}`}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
+            )}
 
             <div className="px-4 mb-2 BoxShadow">
               <div className="text-xl font-bold text-[#000000] TextFont1">
-                Krishna Thulasi Cough Syrup
+                {product.name}
               </div>
               <div className="text-sm font-semibold text-[#6e736d]">
-                Cough Syrup
+                {product.category}
               </div>
               <div className="flex items-center font-bold TextFont">
                 <MdCurrencyRupee />
-                <span className="text-lg">260</span>
+                <span className="text-lg">{product.price}</span>
               </div>
             </div>
+
             <div className="px-4 text-[12px] text-[#000000] mb-3 font-semibold BoxShadow">
-              <ul className="flex flex-col gap-1">
-                <li className="flex items-start">
-                  <span className="text-2xl">
-                    <LuDot />
-                  </span>
-                  Lorem ipsum dolor sit
-                </li>
-                <li className="flex items-start">
-                  <span className="text-2xl">
-                    <LuDot />
-                  </span>
-                  Lorem ipsum dolor sit Lorem ipsum dolor sit amet consectetur,
-                  adipisicing elit. Nisi, veniam.
-                </li>
-                <li className="flex items-start">
-                  <span className="text-2xl">
-                    <LuDot />
-                  </span>
-                  Lorem ipsum dolor sit lorem ipsum iii
-                </li>
-                <li className="flex items-start">
-                  <span className="text-2xl">
-                    <LuDot />
-                  </span>
-                  Lorem ipsum dolor sit
-                </li>
-              </ul>
+              <h3 className="text-[14px] font-bold mb-2">Indication</h3>
+              <div className="flex flex-col gap-1">
+                {product.features && product.features.length > 0 ? (
+                  product.features.map((feature, index) => (
+                    <div key={index} className="flex items-start">
+                      <span>{feature}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex items-start">
+                  
+                    <span>
+                      {product.description || "No description available"}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Usage */}
-            <div className={`px-4 BoxShadow pb-2 ${showOtherDetails ? "mb-5" : "mb-20" }`}>
+            <div
+              className={`px-4 BoxShadow pb-2 ${
+                showOtherDetails ? "mb-5" : "mb-20"
+              }`}
+            >
               <div className="relative">
                 <div className="font-bold mb-2">Usage</div>
                 <div className="font-semibold text-[12px]">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Labore quas, provident minus, assumenda laboriosam sunt autem
-                  quisquam nisi, aliquam molestiae dolore reprehenderit commodi
-                  beatae hic sint dolores architecto deleniti? Commodi!
+                  {product.usage || "Usage information not available"}
                 </div>
               </div>
               <div className="text-[12px] font-semibold items-center flex justify-end right-0">
-                <div className="flex items-center" onClick={() => setShowOtherDetails(!showOtherDetails)}>
-                  {}
-                  <FiPlus />
-                  More
+                <div
+                  className="flex items-center cursor-pointer"
+                  onClick={() => setShowOtherDetails(!showOtherDetails)}
+                >
+                  {showOtherDetails ? 
+                  <div className="flex items-center gap-0.5">
+                    <FiMinus/>
+                    Less
+                  </div> : 
+                  <div className="flex items-center gap-0.5">
+                    <FiPlus />
+                    More
+                  </div>}
+                  
                 </div>
               </div>
             </div>
@@ -194,7 +318,7 @@ const PopUp = ({ openPopUp, setOpenPopUp }) => {
                       MRP
                     </div>
                     <div className="w-[60%] text-[12px]">
-                      : Rs. 260.00 inclussive of all taxes{" "}
+                      : Rs. {product.price}.00 inclusive of all taxes{" "}
                       <span className="block">
                         (MRP changes as per size selection)
                       </span>
@@ -207,7 +331,9 @@ const PopUp = ({ openPopUp, setOpenPopUp }) => {
                       </span>
                       Net Qty
                     </div>
-                    <div className="w-[60%] text-[12px]">: 1 N</div>
+                    <div className="w-[60%] text-[12px]">
+                      : {product.quantity || "1 N"}
+                    </div>
                   </li>
                   <li className="flex items-start w-full gap-2">
                     <div className="w-[40%] flex text-[12px] items-center font-bold">
@@ -217,7 +343,9 @@ const PopUp = ({ openPopUp, setOpenPopUp }) => {
                       Manufactured By
                     </div>
                     <div className="w-[60%] text-[12px]">
-                      : Chasam Ayurvedic Clinic, Vythiri, Wayanad, Kerala
+                      :{" "}
+                      {product.manufacturer ||
+                        "Chasam Ayurvedic Clinic, Vythiri, Wayanad, Kerala"}
                     </div>
                   </li>
                   <li className="flex items-center w-full gap-2">
@@ -227,7 +355,9 @@ const PopUp = ({ openPopUp, setOpenPopUp }) => {
                       </span>
                       Country Of Origin
                     </div>
-                    <div className="w-[60%] text-[12px]">: India</div>
+                    <div className="w-[60%] text-[12px]">
+                      : {product.country || "India"}
+                    </div>
                   </li>
                   <li className="flex items-center w-full gap-2">
                     <div className="w-[40%] flex text-[12px] items-center font-bold">
@@ -236,7 +366,9 @@ const PopUp = ({ openPopUp, setOpenPopUp }) => {
                       </span>
                       Customer Care Address
                     </div>
-                    <div className="w-[60%] text-[12px]">: India</div>
+                    <div className="w-[60%] text-[12px]">
+                      : {product.customerCare || "India"}
+                    </div>
                   </li>
                 </ul>
               </div>

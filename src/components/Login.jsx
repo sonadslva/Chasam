@@ -4,7 +4,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { auth } from "../firebaseConfig"; 
 import logo from "../assets/chasam.png"; 
-
+import { IoIosArrowBack } from "react-icons/io";
 const Login = () => {
   // State for input fields
   const [email, setEmail] = useState("");
@@ -37,7 +37,13 @@ const Login = () => {
 
   return (
     <div className="w-full h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-sm">
+      
+      <div className="bg-white relative p-6 rounded-2xl shadow-lg w-full max-w-sm">
+      <div className=" absolute left-2 top-4">
+      <span onClick={() => navigate("/")} className="cursor-pointer">
+        <IoIosArrowBack className="text-[#178000] text-2xl" />
+      </span>
+      </div>
         {/* Logo */}
         <div className="flex justify-center mb-6">
           <img src={logo} alt="Logo" className="w-24 h-24" />

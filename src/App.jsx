@@ -8,7 +8,8 @@ import ImageBanner from "./components/ImageBanner"
 import Product from './components/Product'
 import Category from "./components/Category"
 import Producthome from './components/Products'  
-
+import  Contact  from "./components/Contact"
+Contact
 const App = () => {
   return (
     <Router>
@@ -32,6 +33,7 @@ const MainLayout = () => {
         <Route path="/product" element={<Product />} />
         <Route path="/category" element={<Category />} />
         <Route path="/products" element={<Producthome />} />
+        <Route path="/contact" element={<Contact/>} />
       </Routes>
     </>
   );
