@@ -157,7 +157,7 @@ const Home = () => {
                     <img
                       src={banner.image}
                       alt="Banner"
-                      className="w-full h-full object-cover"
+                      className="w-full h-auto object-cover"
                     />
                   </SwiperSlide>
                 ))}
@@ -167,7 +167,7 @@ const Home = () => {
                 <img
                   src={banners[0].image}
                   alt="Banner"
-                  className="w-full h-full object-cover"
+                  className="w-full h-auto object-cover"
                 />
               </div>
             ) : (

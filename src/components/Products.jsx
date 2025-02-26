@@ -323,13 +323,13 @@ const Products = () => {
                     setOpenPopUp(true);
                   }}
                 >
-                  <div className="w-[70px] h-[70px] rounded-xl border-[#fff] border overflow-hidden p-1">
+                  <div className="w-[70px] h-[70px] rounded-xl border-[#fff] border overflow-hidden ">
                     <img
                       src={
                         product.image || (product.images && product.images[0])
                       }
                       alt={product.name}
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="flex flex-col gap-1">

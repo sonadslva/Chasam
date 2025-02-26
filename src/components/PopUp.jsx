@@ -147,19 +147,19 @@ useEffect(() => {
             </div>
 
             {/* Main Image Slider */}
-            <div className="w-full flex justify-center items-center p-2 rounded-3xl h-[300px] backdrop-blur-sm bg-[#02842f2c] mb-2 BoxShadow border-[#fff] border relative overflow-hidden">
-              {/* Background Image */}
+            <div className="w-full flex justify-center items-center  rounded-2xl h-[340px] backdrop-blur-sm  mb-2 BoxShadow  relative overflow-hidden">
+              {/* Background Image
               <div className="w-full h-[300px] absolute">
                 <img
                   src={bgImage || product.bgImage || ""}
                   alt="Background"
                   className="w-full h-full object-cover opacity-90"
                 />
-              </div>
+              </div> */}
 
               {/* Product Image */}
               {productImages.length > 0 ? (
-                <div className="w-auto h-[250px] flex justify-center items-center z-10">
+                <div className="w-full h-full flex justify-center items-center z-10">
                   <img
                     src={productImages[currentIndex]}
                     alt={`${product.name || "Product"} - Image ${
@@ -169,7 +169,7 @@ useEffect(() => {
                   />
                 </div>
               ) : (
-                <div className="w-auto h-[250px] flex justify-center items-center z-10">
+                <div className="w-full h-full flex justify-center items-center z-10">
                   <img
                     src={li1}
                     alt="Default Product"
@@ -218,13 +218,13 @@ useEffect(() => {
 
             {/* Thumbnail Navigation */}
             {productImages.length > 1 && (
-              <div className="overflow-x-auto w-full scrollBar px-2">
-                <div className="flex gap-2 mb-3 w-max">
+              <div className="overflow-x-auto w-full scrollBar px-2 py-1">
+                <div className="flex gap-2 mb-3 w-max ">
                   {productImages.map((image, index) => (
                     <div
                       key={index}
                       onClick={() => setCurrentIndex(index)}
-                      className={`w-[100px] h-[100px] p-2 bg-[#fff] shadow-2xl rounded-md cursor-pointer ${
+                      className={`w-[100px] h-[100px]  bg-[#fff] shadow-2xl rounded-md cursor-pointer overflow-hidden ${
                         currentIndex === index ? "ring-2 ring-green-600" : ""
                       }`}
                     >
@@ -239,7 +239,7 @@ useEffect(() => {
               </div>
             )}
 
-            <div className="px-4 mb-2 BoxShadow">
+            <div className="px-4 py-2 mb-2 BoxShadow">
               <div className="text-xl font-bold text-[#000000] TextFont1">
                 {product.name}
               </div>
