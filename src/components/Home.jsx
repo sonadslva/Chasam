@@ -80,14 +80,15 @@ const Home = () => {
             <img src={leaft2} alt="" />
           </div>
           <div className="relative text-[#fff] pr-2 pt-5 leading-tight">
-            <div className="text-md text-[#B1C29E] text-end font-semibold">
-              lorem ipsum
+            <div className="text-[12px]  text-[#B1C29E] text-end font-semibold">
+            Leading Spice Retailer in Wayanad
             </div>
-            <div className="text-2xl text-end font-bold TextFont1">
-              Lorem Ipsum
+            <div className="text-2xl text-end font-bold TextFont1 ">
+            Chasam Ayurvedic 
+            
             </div>
             <div className="text-[12px] text-[#B1C29E] text-end font-semibold">
-              lorem ipsum jui
+            Authentic Ayurvedic & Spice Products
             </div>
           </div>
           <div className="overflow-x-auto mx-auto max-w-[900px] scrollBar md:flex md:justify-center md:items-center md:gap-5 md:px-4">
@@ -149,7 +150,7 @@ const Home = () => {
                 }}
                 autoplay={{ delay: 3000, disableOnInteraction: false }} // ✅ Auto-slide every 3 seconds
                 loop={true}
-                className="w-full h-[150px] md:h-auto BoxShadow border-[#fff] border rounded-xl overflow-hidden"
+                className="w-full h-auto md:h-auto BoxShadow border-[#fff] border rounded-xl overflow-hidden"
               >
                 {banners.map((banner) => (
                   <SwiperSlide key={banner.id}>
@@ -162,7 +163,7 @@ const Home = () => {
                 ))}
               </Swiper>
             ) : banners.length === 1 ? (
-              <div className="w-full h-[150px] md:h-auto BoxShadow border-[#fff] border rounded-xl overflow-hidden">
+              <div className="w-full h-auto md:h-auto BoxShadow border-[#fff] border rounded-xl overflow-hidden">
                 <img
                   src={banners[0].image}
                   alt="Banner"

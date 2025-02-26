@@ -175,20 +175,21 @@ const Products = () => {
           <div className=" absolute w-[100px] h-[100px] rotate-90 left-[-10px] drop-shadow-md">
             <img src={leaft2} alt="" />
           </div>
-          <div className="relative text-[#fff] pr-2 pt-5 mb-5 leading-tight">
-            <div className="text-md text-[#B1C29E] text-end font-semibold">
-              lorem ipsum
+          <div className="relative text-[#fff] pr-2 pt-5 leading-tight mb-5">
+            <div className="text-[12px]  text-[#B1C29E] text-end font-semibold">
+            Leading Spice Retailer in Wayanad
             </div>
-            <div className="text-2xl text-end font-bold TextFont1">
-              Lorem Ipsum
+            <div className="text-2xl text-end font-bold TextFont1 ">
+            Chasam Ayurvedic 
+            
             </div>
             <div className="text-[12px] text-[#B1C29E] text-end font-semibold">
-              lorem ipsum jui
+            Authentic Ayurvedic & Spice Products
             </div>
           </div>
 
           {/* banner */}
-          <div className="px-2 mb-3 relative">
+          <div className="px-2 mb-3  relative">
             {banners.length > 1 ? (
               <Swiper
                 modules={[Pagination, Autoplay]}
@@ -200,7 +201,7 @@ const Products = () => {
                 }}
                 autoplay={{ delay: 3000, disableOnInteraction: false }}
                 loop={true}
-                className="w-full h-[150px] md:h-auto BoxShadow border-[#fff] border rounded-xl overflow-hidden"
+                className="w-full h-auto md:h-auto BoxShadow border-[#fff] border rounded-xl overflow-hidden"
               >
                 {banners.map((banner) => (
                   <SwiperSlide key={banner.id}>
@@ -213,7 +214,7 @@ const Products = () => {
                 ))}
               </Swiper>
             ) : banners.length === 1 ? (
-              <div className="w-full h-[150px] md:h-auto BoxShadow border-[#fff] border rounded-xl overflow-hidden">
+              <div className="w-full h-auto md:h-auto BoxShadow border-[#fff] border rounded-xl overflow-hidden">
                 <img
                   src={banners[0].image}
                   alt="Banner"
@@ -252,7 +253,7 @@ const Products = () => {
                 onClick={() => handleCategorySelect(null)}
               >
                 <div
-                  className={`w-[80px] h-[80px] rounded-full border-[2px] overflow-hidden bg-[#1A1A19] ${
+                  className={`w-[80px] h-[80px] rounded-full border-[2px] overflow-hidden bgGradient ${
                     selectedCategory === null
                       ? "border-yellow-400"
                       : "border-[#00aa0b]"

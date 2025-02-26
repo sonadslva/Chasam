@@ -6,6 +6,7 @@ import {
   updateDoc,
   doc,
   deleteDoc,
+  getDoc,
 } from "firebase/firestore";
 import { dbRealtime, dbFirestore } from "../firebaseConfig";
 import logo from "../assets/chasam.png";
@@ -80,38 +81,37 @@ const ProductPage = () => {
       reader.onerror = (error) => reject(error);
     });
   };
-
   const handleSubmit = async () => {
     if (!productData.name || !productData.price) {
       alert("Please fill all required fields");
       return;
     }
-
+  
     try {
       if (editMode && selectedProduct) {
         const productRef = ref(dbRealtime, `products/${selectedProduct.id}`);
         await update(productRef, productData);
-
-        // Update images in Firestore if they exist
-        if (productData.images.length > 0) {
-          const firestoreDocRef = doc(
-            dbFirestore,
-            "productImages",
-            selectedProduct.id
-          );
+  
+        // Check if Firestore document exists before updating
+        const firestoreDocRef = doc(dbFirestore, "productImages", selectedProduct.id);
+        const docSnap = await getDoc(firestoreDocRef);
+        
+        if (docSnap.exists()) {
           await updateDoc(firestoreDocRef, {
             images: productData.images,
             bgImage: productData.bgImage,
           });
+        } else {
+          console.warn("No existing Firestore document found, skipping update.");
         }
-
+  
         alert("Product updated successfully!");
       } else {
         // Add to Realtime Database
         const productsRef = ref(dbRealtime, "products");
         const newProductRef = await push(productsRef, productData);
-
-        // Store images in Firestore
+  
+        // Store images in Firestore only if images exist
         if (productData.images.length > 0) {
           await addDoc(collection(dbFirestore, "productImages"), {
             productId: newProductRef.key,
@@ -119,14 +119,15 @@ const ProductPage = () => {
             bgImage: productData.bgImage,
           });
         }
-
+  
         alert("Product added successfully!");
       }
+  
       resetForm();
       setShowForm(false);
       setEditMode(false);
       setSelectedImages(false);
-      setImagePreview(false)
+      setImagePreview(false);
       setSelectedProduct(null);
       setProductData({
         name: "",
@@ -168,7 +169,19 @@ const ProductPage = () => {
     setEditMode(true);
     setShowForm(true);
     setShowProducts(false);
-
+    
+    // Set image previews for product images
+    if (product.images && product.images.length > 0) {
+      setSelectedImages(product.images);
+      // Create dummy file names based on image count
+      setFileNames(product.images.map((_, index) => `image-${index+1}.jpg`));
+    }
+    
+    // Set background image preview
+    if (product.bgImage) {
+      setImagePreview(product.bgImage);
+      setFileName("background-image.jpg");
+    }
   };
   const [selectedImages, setSelectedImages] = useState([]);
 
@@ -613,7 +626,7 @@ const ProductPage = () => {
                         </td>
                         <td className="p-2">{product.name}</td>
                         <td className="p-2">{product.category}</td>
-                        <td className="p-2">${product.price}</td>
+                        <td className="p-2">{product.price}</td>
                         <td className="p-2 max-w-[200px]">
                           <div className="truncate">
                             {product.description}

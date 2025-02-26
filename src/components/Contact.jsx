@@ -12,16 +12,20 @@ import wave from "../assets/waveorg.png"
 
 const Contact = () => {
   return (
-    <div className="ContactBg relative bg-[#05D973] mix-blend-multiply w-full h-screen py-10 flex flex-col justify-center items-center overflow-hidden">
+    <div className="ContactBg relative bgGradient mix-blend-multiply w-full h-screen py-10 flex flex-col justify-center items-center overflow-hidden">
       <a href="/">
         <div className=" absolute top-4 left-4 text-xl bg-[#fff] p-1 rounded-full">
           <FaChevronCircleLeft />
         </div>
       </a>
       <div className="relative">
-            <img src={wave} alt="" />
-            <img src={wave} alt="" className="opacity-10 absolute top-2 drop-shadow-sm rotate-3"/>
-        </div>
+        <img src={wave} alt="" />
+        <img
+          src={wave}
+          alt=""
+          className="opacity-10 absolute top-2 drop-shadow-sm rotate-3"
+        />
+      </div>
       <div className="text-center mb-3 text-3xl drop-shadow-2xl font-bold text-[#fff]">
         Contact Us
       </div>
@@ -80,23 +84,46 @@ const Contact = () => {
             <div className="text-2xl text-[#fff]">
               <BiLogoFacebookCircle />
             </div>
-            <div className="text-2xl text-[#fff]">
+            <a
+              href="https://www.instagram.com/chasamayurvedicspicesgarden?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-2xl text-[#fff]"
+            >
               <RiInstagramFill />
-            </div>
-            <div className="text-2xl text-[#fff]">
+            </a>
+            <a
+              href="https://wa.me/919072423493"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-2xl text-[#fff]"
+            >
               <IoLogoWhatsapp />
-            </div>
+            </a>
           </div>
         </div>
         <div className="hidden md:flex md:flex-col md:w-[40%]">
-          <div className="mb-2 text-3xl font-semibold text-[#fff]">Lorem, ipsum dolor</div>
-          <div className="text-[#fff]">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus nemo nisi doloremque minima vitae sint, sunt a ex fugiat delectus facere officia omnis illo modi laborum dolor inventore iure repudiandae.
-          Id suscipit eaque, quod velit sint nemo porro facere temporibus totam, blanditiis distinctio ea accusamus modi sed harum voluptatem voluptas cupiditate reiciendis architecto cumque at eligendi itaque ipsam. Amet, necessitatibus.</div>
+          <div className="mb-2 text-3xl font-semibold text-[#fff]">
+            Lorem, ipsum dolor
+          </div>
+          <div className="text-[#fff]">
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus
+            nemo nisi doloremque minima vitae sint, sunt a ex fugiat delectus
+            facere officia omnis illo modi laborum dolor inventore iure
+            repudiandae. Id suscipit eaque, quod velit sint nemo porro facere
+            temporibus totam, blanditiis distinctio ea accusamus modi sed harum
+            voluptatem voluptas cupiditate reiciendis architecto cumque at
+            eligendi itaque ipsam. Amet, necessitatibus.
+          </div>
         </div>
       </div>
       <div className="relative">
-            <img src={wave} alt="" />
-            <img src={wave} alt="" className="opacity-10 absolute top-2 drop-shadow-sm rotate-3"/>
+        <img src={wave} alt="" />
+        <img
+          src={wave}
+          alt=""
+          className="opacity-10 absolute top-2 drop-shadow-sm rotate-3"
+        />
       </div>
     </div>
   );
