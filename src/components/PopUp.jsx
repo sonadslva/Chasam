@@ -78,22 +78,6 @@ useEffect(() => {
   return () => unsubscribe();
 }, [productId]);
 
-  // Function to navigate to the next image
-  // const nextImage = () => {
-  //   if (productImages.length <= 1) return;
-  //   setCurrentIndex((prevIndex) => 
-  //     prevIndex === productImages.length - 1 ? 0 : prevIndex + 1
-  //   );
-  // };
-
-  // // Function to navigate to the previous image
-  // const prevImage = () => {
-  //   if (productImages.length <= 1) return;
-  //   setCurrentIndex((prevIndex) => 
-  //     prevIndex === 0 ? productImages.length - 1 : prevIndex - 1
-  //   );
-  // };
-
   if (loading) {
     return (
       <div className="fixed top-0 bottom-0 left-0 right-0 bg-[#178000] z-[999] flex justify-center items-center">
@@ -176,16 +160,16 @@ useEffect(() => {
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
-              {/* Background Image */}
-              {/* <div className="w-full h-[300px] absolute">
-        <img src={bgImage || product.bgImage || ""} alt="Background" className="w-full h-full object-cover opacity-90" />
-      </div> */}
-
-              {/* Product Image */}
+              {/* Product Image with Animation */}
               <div className="w-full h-full flex justify-center items-center z-10">
-                <img
+                <motion.img
+                  key={currentIndex}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
                   src={
-                    productImages.length > 0 ? productImages[currentIndex] : li1
+                    productImages.length >  0 ? productImages[currentIndex] : li1
                   }
                   alt={`${product?.name || "Product"} - Image ${
                     currentIndex + 1

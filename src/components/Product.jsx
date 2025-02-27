@@ -17,6 +17,7 @@ import { FaEllipsisV } from "react-icons/fa";
 import pbg1 from "../assets/pbg1.jpeg";
 import pbg2 from "../assets/pbg2.jpeg";
 import { BiSolidFileImage } from "react-icons/bi";
+import { BsStarFill } from "react-icons/bs"; // Added for marking main image
 import imgbbg from "../assets/imgbg.jpeg";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
@@ -39,7 +40,10 @@ const ProductPage = () => {
     usage: "",
     netQty: "",
     images: [],
+    mainImageIndex: 0, // Added to track the main image
+    status: "active"
   });
+  
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -103,20 +107,51 @@ const ProductPage = () => {
     });
   };
 
+  // Function to set an image as the main image
+  const setAsMainImage = (index) => {
+    setProductData(prev => ({
+      ...prev,
+      mainImageIndex: index
+    }));
+  };
+
+  // Function to reorder images with main image first
+  const getOrderedImages = (images, mainIndex) => {
+    if (!images || images.length === 0) return [];
+    if (mainIndex === 0 || mainIndex === undefined) return images;
+    
+    // Create a copy of the images array
+    const orderedImages = [...images];
+    // Remove the main image from its current position
+    const mainImage = orderedImages.splice(mainIndex, 1)[0];
+    // Add it to the beginning
+    orderedImages.unshift(mainImage);
+    
+    return orderedImages;
+  };
+
   const handleSubmit = async () => {
     if (!productData.name || !productData.price) {
       alert("Please fill all required fields");
       return;
     }
-
+  
     try {
-      // Create a copy of productData
-      const dataToSave = { ...productData };
-
+      // Prepare the images array with the main image as the first one
+      const orderedImages = getOrderedImages(productData.images, productData.mainImageIndex);
+      
+      // Create a copy of productData with ordered images
+      const dataToSave = { 
+        ...productData,
+        images: orderedImages,
+        mainImageIndex: 0, // After reordering, the main image is always at index 0
+        status: editMode ? productData.status : "active"
+      };
+  
       if (editMode && selectedProduct) {
         const productRef = ref(dbRealtime, `products/${selectedProduct.id}`);
         await update(productRef, dataToSave);
-
+  
         // Check if Firestore document exists before updating
         const firestoreDocRef = doc(
           dbFirestore,
@@ -124,38 +159,38 @@ const ProductPage = () => {
           selectedProduct.id
         );
         const docSnap = await getDoc(firestoreDocRef);
-
+  
         if (docSnap.exists()) {
           const imageData = {
-            images: productData.images,
+            images: orderedImages,
           };
-
+  
           await updateDoc(firestoreDocRef, imageData);
         } else {
           console.warn(
             "No existing Firestore document found, skipping update."
           );
         }
-
+  
         alert("Product updated successfully!");
       } else {
         // Add to Realtime Database
         const productsRef = ref(dbRealtime, "products");
         const newProductRef = await push(productsRef, dataToSave);
-
+  
         // Store images in Firestore only if images exist
-        if (productData.images.length > 0) {
+        if (orderedImages.length > 0) {
           const firestoreData = {
             productId: newProductRef.key,
-            images: productData.images,
+            images: orderedImages,
           };
-
+  
           await addDoc(collection(dbFirestore, "productImages"), firestoreData);
         }
-
+  
         alert("Product added successfully!");
       }
-
+  
       resetForm();
       setShowForm(false);
       setEditMode(false);
@@ -170,13 +205,15 @@ const ProductPage = () => {
         usage: "",
         netQty: "",
         images: [],
+        mainImageIndex: 0,
+        status: "active"
       });
     } catch (error) {
       console.error("Error saving product:", error);
       alert("Error saving product. Please try again.");
     }
   };
-
+  
   const handleDelete = async (productId) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
@@ -200,6 +237,11 @@ const ProductPage = () => {
     const cleanProduct = { ...product };
     if (cleanProduct.bgImage) {
       delete cleanProduct.bgImage;
+    }
+
+    // If product doesn't have mainImageIndex, set it to 0
+    if (cleanProduct.mainImageIndex === undefined) {
+      cleanProduct.mainImageIndex = 0;
     }
 
     setProductData(cleanProduct);
@@ -232,7 +274,11 @@ const ProductPage = () => {
           return await convertImageToBase64(compressedFile);
         })
       );
-      setProductData({ ...productData, images: base64Images });
+      setProductData({ 
+        ...productData, 
+        images: base64Images,
+        mainImageIndex: 0 // Set first image as main by default
+      });
       setFileNames(files.map((file) => file.name));
     } catch (error) {
       console.error("Error processing images:", error);
@@ -291,7 +337,7 @@ const ProductPage = () => {
     // Reset image previews and file names
     setSelectedImages([]);
     setFileNames([]);
-
+  
     // Reset all input fields
     setProductData({
       name: "",
@@ -302,8 +348,10 @@ const ProductPage = () => {
       usage: "",
       netQty: "",
       images: [],
+      mainImageIndex: 0,
+      status: "active"
     });
-
+  
     // Reset edit mode and selected product
     setEditMode(false);
     setSelectedProduct(null);
@@ -404,7 +452,7 @@ const ProductPage = () => {
             MANAGE PRODUCTS
           </h2>
 
-          <div className="flex gap-2 w-full">
+          <div className="flex gap-2 w-full ">
             <div
               className="relative w-[50%] h-[180px] flex justify-center items-center rounded-3xl bg-cover bg-center cursor-pointer"
               style={{ backgroundImage: `url(${pbg1})` }}
@@ -415,15 +463,6 @@ const ProductPage = () => {
                   resetForm();
                   setEditMode(false);
                   setSelectedProduct(null);
-                  setProductData({
-                    name: "",
-                    category: "",
-                    price: "",
-                    purpose: "",
-                    description: "",
-                    netQty: "",
-                    images: [],
-                  });
                 }
               }}
             >
@@ -451,7 +490,7 @@ const ProductPage = () => {
           </div>
 
           {showForm && (
-            <div>
+            <div className="mb-8">
               <h3 className="text-xl font-bold text-black mb-4 text-center">
                 {editMode ? "EDIT PRODUCT" : "ADD NEW PRODUCT"}
               </h3>
@@ -473,15 +512,34 @@ const ProductPage = () => {
               </div>
 
               {selectedImages.length > 0 && (
-                <div className="grid grid-cols-3 gap-2 mb-4">
-                  {selectedImages.map((preview, index) => (
-                    <img
-                      key={index}
-                      src={preview}
-                      alt={`Preview ${index}`}
-                      className="h-16 w-16 object-cover rounded"
-                    />
-                  ))}
+                <div>
+                  <p className="text-sm text-center mb-2">
+                    Click on a star icon to set as main product image
+                  </p>
+                  <div className="grid grid-cols-3 gap-2 mb-4">
+                    {selectedImages.map((preview, index) => (
+                      <div key={index} className="relative">
+                        <img
+                          src={preview}
+                          alt={`Preview ${index}`}
+                          className="h-16 w-16 object-cover rounded"
+                        />
+                        <button
+                          className="absolute top-1 right-1 bg-white rounded-full p-1"
+                          onClick={() => setAsMainImage(index)}
+                        >
+                          <BsStarFill
+                            size={12}
+                            className={
+                              productData.mainImageIndex === index
+                                ? "text-yellow-500"
+                                : "text-gray-300"
+                            }
+                          />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -581,7 +639,7 @@ const ProductPage = () => {
                 PRODUCT LIST
               </h3>
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[1000px] bg-white border  rounded-lg">
+                <table className="w-full min-w-[1000px] bg-white border rounded-lg">
                   <thead>
                     <tr className="bg-gray-200">
                       <th className="p-2">Images</th>
@@ -606,7 +664,7 @@ const ProductPage = () => {
                           {product.images && product.images.length > 0 ? (
                             <div className="w-12 h-12 cursor-pointer">
                               <img
-                                src={product.images[0]}
+                                src={product.images[0]} 
                                 alt="Thumbnail"
                                 className="w-full h-full object-cover rounded"
                                 onClick={() =>

@@ -11,6 +11,42 @@ import { FaChevronCircleLeft } from "react-icons/fa";
 import wave from "../assets/waveorg.png"
 
 const Contact = () => {
+  const [result, setResult] = React.useState("");
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    setResult("Sending....");
+    const formData = new FormData(event.target);
+
+    formData.append("access_key", "3e557a00-0b21-45e5-b274-496427ac9210");
+
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      setResult("Message Sent Successfully!");
+      event.target.reset();
+    
+      // Remove message after 3 seconds
+      setTimeout(() => {
+        setResult("");
+      }, 3000);
+    } else {
+      console.log("Error", data);
+      setResult(data.message);
+    
+      // Remove error message after 3 seconds
+      setTimeout(() => {
+        setResult("");
+      }, 3000);
+    }
+    
+  };
+
   return (
     <div className="ContactBg relative bgGradient mix-blend-multiply w-full h-screen py-10 flex flex-col justify-center items-center overflow-hidden">
       <a href="/">
@@ -31,12 +67,17 @@ const Contact = () => {
       </div>
       <div className="md:flex md:justify-center md:items-center w-full md:gap-10 px-2 md:px-6 max-w-[1200px] mx-auto">
         <div className="flex flex-col justify-center items-center w-full px-2 md:w-[60%]">
-          <form action="" className="w-full flex flex-col gap-2 mb-5">
+          <form
+            action=""
+            className="w-full flex flex-col gap-2 mb-5"
+            onSubmit={onSubmit}
+          >
             <div className="relative flex items-center w-full">
               <input
                 type="text"
                 placeholder="First Name"
                 className="w-full px-8 py-2 rounded-3xl border-[2px] border-[#fff] backdrop-blur-sm outline-none text-[#fff]"
+                name="firstname"
               />
               <span className=" absolute right-4 text-[#fff]">
                 <FaUser />
@@ -47,6 +88,7 @@ const Contact = () => {
                 type="number"
                 placeholder="Phone Number"
                 className="w-full px-8 py-2 rounded-3xl border-[2px] border-[#fff] backdrop-blur-sm outline-none text-[#fff]"
+                name="phonenumber"
               />
               <span className=" absolute right-4 text-[#fff]">
                 <MdPhone />
@@ -57,6 +99,7 @@ const Contact = () => {
                 type="email"
                 placeholder="Email"
                 className="w-full px-8 py-2 rounded-3xl border-[2px] border-[#fff] backdrop-blur-sm outline-none text-[#fff]"
+                name="email"
               />
               <span className="absolute right-4 text-[#fff]">
                 <HiOutlineMail />
@@ -64,7 +107,7 @@ const Contact = () => {
             </div>
             <div className="relative flex items-start w-full">
               <textarea
-                name=""
+                name="message"
                 placeholder="Message"
                 id=""
                 className="w-full px-8 py-2 rounded-3xl border-[2px] border-[#fff] backdrop-blur-sm outline-none text-[#fff]"
@@ -79,6 +122,8 @@ const Contact = () => {
               </button>
             </div>
           </form>
+          <span>{result}</span>
+
           {/* Social Media */}
           <div className="flex justify-center items-center gap-4 border-t w-full pt-3 border-[#fff]">
             <div className="text-2xl text-[#fff]">
@@ -104,16 +149,16 @@ const Contact = () => {
         </div>
         <div className="hidden md:flex md:flex-col md:w-[40%]">
           <div className="mb-2 text-3xl font-semibold text-[#fff]">
-            Lorem, ipsum dolor
+            🌿 Experience the Essence of Ayurveda & Pure Spices 🌿
           </div>
           <div className="text-[#fff]">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus
-            nemo nisi doloremque minima vitae sint, sunt a ex fugiat delectus
-            facere officia omnis illo modi laborum dolor inventore iure
-            repudiandae. Id suscipit eaque, quod velit sint nemo porro facere
-            temporibus totam, blanditiis distinctio ea accusamus modi sed harum
-            voluptatem voluptas cupiditate reiciendis architecto cumque at
-            eligendi itaque ipsam. Amet, necessitatibus.
+            We are always here to assist you! Whether you have questions about
+            our Ayurvedic products, need guidance on our organic spices, or want
+            to visit our store, feel free to reach out.
+            <span className="block font-bold">📍 Address </span>  📌 Chasam
+            Ayurvedic & Spices Garden Vythiri, Wayanad, Kerala, India<span className="block font-bold">📲 Get in
+            Touch</span>  📞 Phone: +91 90724 23493 <span className="block">✉️ Email: chasamayurvedic@gmail.com</span>
+          
           </div>
         </div>
       </div>

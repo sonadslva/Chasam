@@ -1,10 +1,15 @@
 import React from 'react'
+import logo from "../assets/vythiri.png"
+import { motion } from "framer-motion"
+import video from "../assets/an.webm"
 
 const Introduction = () => {
   return (
-    <div className='bg-[#3a643c] h-screen w-full flex flex-col justify-center items-center'>
+    <div className='bg-[#ffffff] h-screen w-full flex flex-col justify-center items-center fixed top-0 bottom-0 left-0 right-0 z-[999]'>
       <div>
-        <div className=' font-semibold text-3xl drop-shadow-lg bg-gradient-to-r from-[#FFB22C] via-[#ffc868] to-[#ffa200] bg-clip-text text-transparent'>Ayurvedic</div>
+        <div className='w-[100px] h-[100px]'>
+          <video src={video} playsInline autoPlay loop muted className='w-full h-full object-contain drop-shadow-md'></video>
+        </div>
       </div>
     </div>
   )

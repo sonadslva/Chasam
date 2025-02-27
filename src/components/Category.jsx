@@ -132,6 +132,7 @@ const Category = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+  
   return (
     <div className="min-h-screen w-full relative">
       <div

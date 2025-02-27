@@ -95,15 +95,7 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Links */}
-        <div className="flex justify-between mt-4 text-sm">
-          <a href="#" className="text-green-500 hover:underline">
-            Forgot Password?
-          </a>
-          <a href="#" className="text-green-500 hover:underline">
-            Create New Account
-          </a>
-        </div>
+        
       </div>
     </div>
   );

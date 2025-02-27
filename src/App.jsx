@@ -9,8 +9,13 @@ import Product from './components/Product'
 import Category from "./components/Category"
 import Producthome from './components/Products'  
 import  Contact  from "./components/Contact"
+import { useEffect,useState } from "react"
+
 Contact
 const App = () => {
+  
+  
+
   return (
     <Router>
       <MainLayout />
@@ -21,10 +26,23 @@ const App = () => {
 const MainLayout = () => {
   const location = useLocation();
   const hideNavbarPaths = ["/login","/admin","/imagebanner","/product","/category"]; // Add more paths if needed
+  const [showIntro, setShowIntro] = useState(true);
+  useEffect(() => {
+    setShowIntro(true);
+    const timer = setTimeout(() => {
+      setShowIntro(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [location]);
 
   return (
     <>
       {!hideNavbarPaths.includes(location.pathname) && <Navbar />}
+      {showIntro ? (
+        <Introduction />
+      ) : (
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -35,6 +53,7 @@ const MainLayout = () => {
         <Route path="/products" element={<Producthome />} />
         <Route path="/contact" element={<Contact/>} />
       </Routes>
+)}
     </>
   );
 };

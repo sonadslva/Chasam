@@ -157,6 +157,8 @@ const Products = () => {
     return () => unsubscribe();
   }, []);
   const [selectedProductId, setSelectedProductId] = useState(null); 
+
+  
   return (
     <div className="overflow-hidden relative w-full">
       <div className="absolute top-0 bottom-0 left-0 right-0">
