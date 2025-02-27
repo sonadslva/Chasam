@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { FaEllipsisV, FaEdit, FaTrash } from "react-icons/fa";
 import { BiSolidFileImage } from "react-icons/bi";
 import categoryBg from "../assets/imgbg.jpeg";
-import catbg1 from '../assets/catbg1.jpg'
-import catbg2 from '../assets/catbg2.jpg'
+import catbg1 from "../assets/catbg1.jpg";
+import catbg2 from "../assets/catbg2.jpg";
 
 const Category = () => {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const Category = () => {
       if (data) {
         const categoriesArray = Object.entries(data).map(([id, value]) => ({
           id,
-          ...value
+          ...value,
         }));
         setCategories(categoriesArray);
       } else {
@@ -118,7 +118,20 @@ const Category = () => {
       }
     }
   };
+  const [isScrolled, setIsScrolled] = useState(false);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   return (
     <div className="min-h-screen w-full relative">
       <div
@@ -134,25 +147,42 @@ const Category = () => {
           >
             <AdminNav closeMenu={() => setMenuOpen(false)} />
           </div>
+          {/* nav */}
           <div className="flex flex-1 items-center w-full">
-            <div className="flex items-center bg-[#00000000] py-4 px-0 z-[999] fixed top-0 w-full">
+            {/* Top Navigation */}
+            <div
+              className={`flex items-center py-4 px-0 z-[999] fixed top-0 w-full transition-colors duration-300 ${
+                isScrolled
+                  ? "bg-white shadow-md rounded-b-3xl"
+                  : "bg-transparent"
+              }`}
+            >
               <button
-                className="menu-btn text-gray-700 text-2xl p-4"
+                className="menu-btn text-gray-700 text-2xl p-4 focus:outline-none ml-0"
                 onClick={toggleMenu}
               >
-                <FaEllipsisV className="text-white text-3xl" />
+                <FaEllipsisV
+                  className={`text-3xl ${
+                    isScrolled ? "text-black" : "text-white"
+                  }`}
+                />
               </button>
               <div className="ml-[-5px] flex justify-center">
                 <img src={logo} alt="Logo" className="w-14" />
               </div>
               <div
-                className="flex justify-center ml-55 text-2xl"
+                className="flex justify-center ml-auto pr-3 text-2xl"
                 onClick={handleLogout}
               >
-                <IoMdLogOut className="text-white text-3xl" />
+                <IoMdLogOut
+                  className={`text-3xl ${
+                    isScrolled ? "text-black" : "text-white"
+                  }`}
+                />
               </div>
             </div>
           </div>
+
           <div className="w-full flex flex-col h-auto px-2 mt-[80px]">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center justify-center pt-5">
               MANAGE CATEGORIES

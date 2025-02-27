@@ -98,26 +98,68 @@ const ImageBanner = () => {
       }
     }
   };
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen w-full relative">
-      <div className="absolute inset-0 bg-cover bg-center opacity-60" style={{ backgroundImage: `url(${imgbgb})` }} />
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-60"
+        style={{ backgroundImage: `url(${imgbgb})` }}
+      />
       <div className="relative z-10">
         <div className="flex h-auto">
-          <div className={`fixed top-0 z-[998] left-0 h-full bg-[#00000007] backdrop-blur-sm shadow-lg w-14 transition-transform ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}>
+          <div
+            className={`fixed top-0 z-[998] left-0 h-full bg-[#00000007] backdrop-blur-sm shadow-lg w-14 transition-transform ${
+              menuOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
+          >
             <AdminNav closeMenu={() => setMenuOpen(false)} />
           </div>
 
           <div className="flex flex-1 items-center w-full">
-            <div className="flex items-center bg-transparent py-4 px-0 fixed top-0 w-full z-[999]">
-              <button className="menu-btn text-3xl p-4 focus:outline-none" onClick={toggleMenu}>
-                <FaEllipsisV className="text-white" />
+            {/* Top Navigation */}
+            <div
+              className={`flex items-center py-4 px-0 z-[999] fixed top-0 w-full transition-colors duration-300 ${
+                isScrolled
+                  ? "bg-white shadow-md rounded-b-3xl"
+                  : "bg-transparent"
+              }`}
+            >
+              <button
+                className="menu-btn text-gray-700 text-2xl p-4 focus:outline-none ml-0"
+                onClick={toggleMenu}
+              >
+                <FaEllipsisV
+                  className={`text-3xl ${
+                    isScrolled ? "text-black" : "text-white"
+                  }`}
+                />
               </button>
               <div className="ml-[-5px] flex justify-center">
                 <img src={logo} alt="Logo" className="w-14" />
               </div>
-              <div className="flex justify-center ml-55 text-2xl" onClick={handleLogout}>
-                <IoMdLogOut className="text-white text-3xl" />
+              <div
+                className="flex justify-center ml-auto pr-3 text-2xl"
+                onClick={handleLogout}
+              >
+                <IoMdLogOut
+                  className={`text-3xl ${
+                    isScrolled ? "text-black" : "text-white"
+                  }`}
+                />
               </div>
             </div>
           </div>
@@ -156,8 +198,8 @@ const ImageBanner = () => {
                 </button>
               </div>
             </div>
- {/* Add Banner Form (Appears on Click) */}
- {showForm && (
+            {/* Add Banner Form (Appears on Click) */}
+            {showForm && (
               <div className="w-full max-w-md bg-[#CBBA9E] p-6 mt-6 rounded-lg shadow-lg mb-3">
                 <h3 className="text-2xl font-bold text-white mb-4 text-center">
                   ADD NEW BANNER
@@ -207,22 +249,40 @@ const ImageBanner = () => {
               <div className="mt-8 w-full relative">
                 <div className="absolute inset-0 bg-[#ffffff79] bg-opacity-10 backdrop-blur-xl rounded-lg"></div>
                 <div className="relative z-10 p-4 rounded-lg shadow-lg">
-                  <h3 className="text-xl font-bold text-black mb-4 text-center">UPLOADED BANNERS</h3>
+                  <h3 className="text-xl font-bold text-black mb-4 text-center">
+                    UPLOADED BANNERS
+                  </h3>
                   {Object.keys(banners).length === 0 ? (
                     <p className="text-black">No banners uploaded yet.</p>
                   ) : (
                     <div className="grid grid-cols-1 gap-4">
                       {Object.entries(banners).map(([bannerId, banner]) => (
-                        <div key={bannerId} className="shadow-lg bg-[#ab8c59] rounded-lg overflow-hidden">
-                          <img src={banner.image} alt="Banner" className="w-full h-40 object-cover" />
+                        <div
+                          key={bannerId}
+                          className="shadow-lg bg-[#ab8c59] rounded-lg overflow-hidden"
+                        >
+                          <img
+                            src={banner.image}
+                            alt="Banner"
+                            className="w-full h-40 object-cover"
+                          />
                           <div className="p-3 flex justify-between items-center">
                             <button
-                              onClick={() => handleStatusToggle(bannerId, banner.status)}
-                              className={`px-3 py-1 rounded ${banner.status === "active" ? "bg-green-500" : "bg-red-500"} text-white`}
+                              onClick={() =>
+                                handleStatusToggle(bannerId, banner.status)
+                              }
+                              className={`px-3 py-1 rounded ${
+                                banner.status === "active"
+                                  ? "bg-green-500"
+                                  : "bg-red-500"
+                              } text-white`}
                             >
                               {banner.status}
                             </button>
-                            <button onClick={() => handleDeleteBanner(bannerId)} className="px-3 py-1 bg-red-600 text-white rounded">
+                            <button
+                              onClick={() => handleDeleteBanner(bannerId)}
+                              className="px-3 py-1 bg-red-600 text-white rounded"
+                            >
                               Delete
                             </button>
                           </div>
@@ -234,7 +294,6 @@ const ImageBanner = () => {
               </div>
             )}
           </div>
-          
         </div>
       </div>
     </div>

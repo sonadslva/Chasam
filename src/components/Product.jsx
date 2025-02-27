@@ -18,7 +18,7 @@ import pbg1 from "../assets/pbg1.jpeg";
 import pbg2 from "../assets/pbg2.jpeg";
 import { BiSolidFileImage } from "react-icons/bi";
 import imgbbg from "../assets/imgbg.jpeg";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 const ProductPage = () => {
   const navigate = useNavigate();
@@ -40,13 +40,28 @@ const ProductPage = () => {
     netQty: "",
     images: [],
   });
-  
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   const [selectedImages, setSelectedImages] = useState([]);
   const [fileNames, setFileNames] = useState([]);
-  // State for image carousel
-  const [currentIndex, setCurrentIndex] = useState(0);
-  // Track which product's images we're currently viewing
-  const [currentProductId, setCurrentProductId] = useState(null);
+
+  // State for image modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalImages, setModalImages] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  let startTouchX = 0;
 
   useEffect(() => {
     const productsRef = ref(dbRealtime, "products");
@@ -74,11 +89,11 @@ const ProductPage = () => {
   }, []);
 
   const handleLogout = () => navigate("/login");
-  
+
   const handleChange = (e) => {
     setProductData({ ...productData, [e.target.name]: e.target.value });
   };
-  
+
   const convertImageToBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -87,54 +102,60 @@ const ProductPage = () => {
       reader.onerror = (error) => reject(error);
     });
   };
-  
+
   const handleSubmit = async () => {
     if (!productData.name || !productData.price) {
       alert("Please fill all required fields");
       return;
     }
-  
+
     try {
       // Create a copy of productData
       const dataToSave = { ...productData };
-      
+
       if (editMode && selectedProduct) {
         const productRef = ref(dbRealtime, `products/${selectedProduct.id}`);
         await update(productRef, dataToSave);
-  
+
         // Check if Firestore document exists before updating
-        const firestoreDocRef = doc(dbFirestore, "productImages", selectedProduct.id);
+        const firestoreDocRef = doc(
+          dbFirestore,
+          "productImages",
+          selectedProduct.id
+        );
         const docSnap = await getDoc(firestoreDocRef);
-        
+
         if (docSnap.exists()) {
           const imageData = {
             images: productData.images,
           };
-          
+
           await updateDoc(firestoreDocRef, imageData);
         } else {
-          console.warn("No existing Firestore document found, skipping update.");
+          console.warn(
+            "No existing Firestore document found, skipping update."
+          );
         }
-  
+
         alert("Product updated successfully!");
       } else {
         // Add to Realtime Database
         const productsRef = ref(dbRealtime, "products");
         const newProductRef = await push(productsRef, dataToSave);
-  
+
         // Store images in Firestore only if images exist
         if (productData.images.length > 0) {
           const firestoreData = {
             productId: newProductRef.key,
             images: productData.images,
           };
-          
+
           await addDoc(collection(dbFirestore, "productImages"), firestoreData);
         }
-  
+
         alert("Product added successfully!");
       }
-  
+
       resetForm();
       setShowForm(false);
       setEditMode(false);
@@ -155,7 +176,7 @@ const ProductPage = () => {
       alert("Error saving product. Please try again.");
     }
   };
-  
+
   const handleDelete = async (productId) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
@@ -171,29 +192,29 @@ const ProductPage = () => {
       }
     }
   };
-  
+
   const handleEdit = (product) => {
     setSelectedProduct(product);
-    
+
     // Create a clean product object without bgImage
     const cleanProduct = { ...product };
     if (cleanProduct.bgImage) {
       delete cleanProduct.bgImage;
     }
-    
+
     setProductData(cleanProduct);
     setEditMode(true);
     setShowForm(true);
     setShowProducts(false);
-    
+
     // Set image previews for product images
     if (product.images && product.images.length > 0) {
       setSelectedImages(product.images);
       // Create dummy file names based on image count
-      setFileNames(product.images.map((_, index) => `image-${index+1}.jpg`));
+      setFileNames(product.images.map((_, index) => `image-${index + 1}.jpg`));
     }
   };
-  
+
   const handleImageUpload = async (event) => {
     const files = Array.from(event.target.files);
     if (files.length > 6) {
@@ -218,18 +239,18 @@ const ProductPage = () => {
       alert("Error processing images. Please try again with smaller files.");
     }
   };
-  
+
   const closeMenu = (e) => {
     if (!e.target.closest(".sidebar") && !e.target.closest(".menu-btn")) {
       setMenuOpen(false);
     }
   };
-  
+
   const toggleMenu = (e) => {
     e.stopPropagation();
     setMenuOpen((prev) => !prev);
   };
-  
+
   const compressImage = (file, maxWidth) => {
     return new Promise((resolve) => {
       const reader = new FileReader();
@@ -265,12 +286,12 @@ const ProductPage = () => {
       };
     });
   };
-  
+
   const resetForm = () => {
     // Reset image previews and file names
     setSelectedImages([]);
     setFileNames([]);
-    
+
     // Reset all input fields
     setProductData({
       name: "",
@@ -282,55 +303,52 @@ const ProductPage = () => {
       netQty: "",
       images: [],
     });
-    
+
     // Reset edit mode and selected product
     setEditMode(false);
     setSelectedProduct(null);
   };
 
-  // Fixed image navigation functions
-  const prevImage = (productId, images) => {
-    if (currentProductId !== productId) {
-      setCurrentIndex(0);
-      setCurrentProductId(productId);
-    } else {
-      setCurrentIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
+  // Modal image navigation functions
+  const openImageModal = (images, startIndex = 0) => {
+    if (images && images.length > 0) {
+      setModalImages(images);
+      setCurrentImageIndex(startIndex);
+      setIsModalOpen(true);
     }
   };
 
-  const nextImage = (productId, images) => {
-    if (currentProductId !== productId) {
-      setCurrentIndex(0);
-      setCurrentProductId(productId);
-    } else {
-      setCurrentIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
-    }
+  const prevImage = () => {
+    setCurrentImageIndex((prev) =>
+      prev > 0 ? prev - 1 : modalImages.length - 1
+    );
   };
 
-  const handleTouchStart = (e, productId) => {
-    setCurrentProductId(productId);
-    startX = e.touches[0].clientX;
+  const nextImage = () => {
+    setCurrentImageIndex((prev) =>
+      prev < modalImages.length - 1 ? prev + 1 : 0
+    );
   };
 
-  const handleTouchEnd = (e, productId, images) => {
-    if (currentProductId !== productId) {
-      setCurrentIndex(0);
-      setCurrentProductId(productId);
-      return;
-    }
-    
+  // Touch event handlers for swiping in modal
+  const handleTouchStart = (e) => {
+    startTouchX = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
     const endX = e.changedTouches[0].clientX;
-    const diff = startX - endX;
+    const diff = startTouchX - endX;
 
-    if (diff > 50) {
-      nextImage(productId, images); // Swipe left → Next image
-    } else if (diff < -50) {
-      prevImage(productId, images); // Swipe right → Previous image
+    // If swipe distance is significant enough
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        nextImage(); // Swipe left → Next image
+      } else {
+        prevImage(); // Swipe right → Previous image
+      }
     }
   };
-  
-  let startX = 0;
-  
+
   return (
     <div className="min-h-screen w-full relative">
       <div
@@ -348,21 +366,34 @@ const ProductPage = () => {
           </div>
 
           <div className="flex flex-1 items-center w-full">
-            <div className="flex items-center bg-[#00000000] py-4 px-0 z-[999] fixed top-0 w-full">
+            {/* Top Navigation */}
+            <div
+              className={`flex items-center py-4 px-0 z-[999] fixed top-0 w-full transition-colors duration-300 ${
+                isScrolled ? "bg-white shadow-md rounded-b-3xl" : "bg-transparent"
+              }`}
+            >
               <button
                 className="menu-btn text-gray-700 text-2xl p-4 focus:outline-none ml-0"
                 onClick={toggleMenu}
               >
-                <FaEllipsisV className="text-white text-3xl" />
+                <FaEllipsisV
+                  className={`text-3xl ${
+                    isScrolled ? "text-black" : "text-white"
+                  }`}
+                />
               </button>
               <div className="ml-[-5px] flex justify-center">
                 <img src={logo} alt="Logo" className="w-14" />
               </div>
               <div
-                className="flex justify-center ml-55 text-2xl cursor-pointer"
+                className="flex justify-center ml-auto pr-3 text-2xl"
                 onClick={handleLogout}
               >
-                <IoMdLogOut className="text-white text-3xl" />
+                <IoMdLogOut
+                  className={`text-3xl ${
+                    isScrolled ? "text-black" : "text-white"
+                  }`}
+                />
               </div>
             </div>
           </div>
@@ -550,7 +581,7 @@ const ProductPage = () => {
                 PRODUCT LIST
               </h3>
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[1000px] bg-white border rounded-lg">
+                <table className="w-full min-w-[1000px] bg-white border  rounded-lg">
                   <thead>
                     <tr className="bg-gray-200">
                       <th className="p-2">Images</th>
@@ -567,54 +598,28 @@ const ProductPage = () => {
                   </thead>
                   <tbody>
                     {products.map((product) => (
-                      <tr key={product.id} className="border-b text-center">
+                      <tr
+                        key={product.id}
+                        className="border-b border-r text-center"
+                      >
                         <td className="p-2">
                           {product.images && product.images.length > 0 ? (
-                            <div className="relative w-14 flex items-center justify-center">
-                              {/* Previous Button */}
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  prevImage(product.id, product.images);
-                                }}
-                                className="absolute left-0 z-10  text-black p-1 rounded-full opacity-70 hover:opacity-100"
-                              >
-                                <ChevronLeft size={16} />
-                              </button>
-
-                              {/* Swipeable Image */}
-                              <div
-                                className="w-18 h-18 flex justify-center items-center overflow-hidden rounded cursor-pointer"
-                                onTouchStart={(e) => handleTouchStart(e, product.id)}
-                                onTouchEnd={(e) => handleTouchEnd(e, product.id, product.images)}
-                                onClick={() => {
-                                  const imageIndex = currentProductId === product.id ? currentIndex : 0;
-                                  window.open(product.images[imageIndex], "_blank");
-                                }}
-                              >
-                                <img
-                                  src={currentProductId === product.id 
-                                    ? product.images[currentIndex] 
-                                    : product.images[0]}
-                                  alt={`Thumbnail`}
-                                  className="w-full h-full object-cover transition-transform duration-300"
-                                />
-                              </div>
-
-                              {/* Next Button */}
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  nextImage(product.id, product.images);
-                                }}
-                                className="absolute right-0 z-10  text-black p-1 rounded-full opacity-70 hover:opacity-100"
-                              >
-                                <ChevronRight size={16} />
-                              </button>
+                            <div className="w-12 h-12 cursor-pointer">
+                              <img
+                                src={product.images[0]}
+                                alt="Thumbnail"
+                                className="w-full h-full object-cover rounded"
+                                onClick={() =>
+                                  openImageModal(product.images, 0)
+                                }
+                              />
                             </div>
                           ) : (
                             <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
-                              <BiSolidFileImage size={20} className="text-gray-400" />
+                              <BiSolidFileImage
+                                size={20}
+                                className="text-gray-400"
+                              />
                             </div>
                           )}
                         </td>
@@ -677,6 +682,64 @@ const ProductPage = () => {
           )}
         </div>
       </div>
+
+      {/* Image Viewer Modal with Transparent Background */}
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div
+            className="relative max-w-4xl w-full h-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            {/* Close Button */}
+            <button
+              className="absolute top-4 right-4 z-20 bg-gray-200 rounded-full p-1"
+              onClick={() => setIsModalOpen(false)}
+            >
+              <X size={24} />
+            </button>
+
+            {/* Navigation Buttons */}
+            <button
+              className="absolute left-4 z-20 bg-gray-200 rounded-full p-2 opacity-80 hover:opacity-100"
+              onClick={(e) => {
+                e.stopPropagation();
+                prevImage();
+              }}
+            >
+              <ChevronLeft size={24} />
+            </button>
+
+            {/* Image Container */}
+            <div className="relative max-h-screen max-w-full p-4">
+              <img
+                src={modalImages[currentImageIndex]}
+                alt="Product View"
+                className="max-h-[90vh] max-w-full object-contain"
+              />
+
+              {/* Image Counter */}
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-200 px-3 py-1 rounded-full text-sm">
+                {currentImageIndex + 1} / {modalImages.length}
+              </div>
+            </div>
+
+            <button
+              className="absolute right-4 z-20 bg-gray-200 rounded-full p-2 opacity-80 hover:opacity-100"
+              onClick={(e) => {
+                e.stopPropagation();
+                nextImage();
+              }}
+            >
+              <ChevronRight size={24} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
