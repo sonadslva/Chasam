@@ -313,11 +313,11 @@ const Products = () => {
       </section>
 
       {/* product list */}
-      <section className="w-full px-2 mb-16">
+      <section className="w-full px-2 mb-16 py-8">
         <div className="w-full flex flex-col md:grid md:grid-cols-2 gap-2 relative z-20 mb-2">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
-              <div key={product.id} className="w-full">
+              <div key={product.id} className="w-full ">
                 <div
                   className="w-full relative flex gap-3 drop-shadow-sm h-[80px] p-1 ProductListBox backdrop-blur-sm rounded-xl border border-[#fff] bg-[#166000]"
                   onClick={() => {
