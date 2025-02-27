@@ -313,7 +313,7 @@ const Products = () => {
       </section>
 
       {/* product list */}
-      <section className="w-full px-2 mb-16 py-8">
+      <section className="w-full px-2 mb-16 md:py-8">
         <div className="w-full flex flex-col md:grid md:grid-cols-2 gap-2 relative z-20 mb-2">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
