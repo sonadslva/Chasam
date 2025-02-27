@@ -18,6 +18,7 @@ import pbg1 from "../assets/pbg1.jpeg";
 import pbg2 from "../assets/pbg2.jpeg";
 import { BiSolidFileImage } from "react-icons/bi";
 import imgbbg from "../assets/imgbg.jpeg";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const ProductPage = () => {
   const navigate = useNavigate();
@@ -38,12 +39,14 @@ const ProductPage = () => {
     usage: "",
     netQty: "",
     images: [],
-    // bgImage removed
   });
   
-  // Remove imagePreview and fileName states which were used for bgImage
   const [selectedImages, setSelectedImages] = useState([]);
   const [fileNames, setFileNames] = useState([]);
+  // State for image carousel
+  const [currentIndex, setCurrentIndex] = useState(0);
+  // Track which product's images we're currently viewing
+  const [currentProductId, setCurrentProductId] = useState(null);
 
   useEffect(() => {
     const productsRef = ref(dbRealtime, "products");
@@ -92,7 +95,7 @@ const ProductPage = () => {
     }
   
     try {
-      // Create a copy of productData (no need to handle bgImage since it's removed)
+      // Create a copy of productData
       const dataToSave = { ...productData };
       
       if (editMode && selectedProduct) {
@@ -284,6 +287,50 @@ const ProductPage = () => {
     setEditMode(false);
     setSelectedProduct(null);
   };
+
+  // Fixed image navigation functions
+  const prevImage = (productId, images) => {
+    if (currentProductId !== productId) {
+      setCurrentIndex(0);
+      setCurrentProductId(productId);
+    } else {
+      setCurrentIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
+    }
+  };
+
+  const nextImage = (productId, images) => {
+    if (currentProductId !== productId) {
+      setCurrentIndex(0);
+      setCurrentProductId(productId);
+    } else {
+      setCurrentIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
+    }
+  };
+
+  const handleTouchStart = (e, productId) => {
+    setCurrentProductId(productId);
+    startX = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e, productId, images) => {
+    if (currentProductId !== productId) {
+      setCurrentIndex(0);
+      setCurrentProductId(productId);
+      return;
+    }
+    
+    const endX = e.changedTouches[0].clientX;
+    const diff = startX - endX;
+
+    if (diff > 50) {
+      nextImage(productId, images); // Swipe left → Next image
+    } else if (diff < -50) {
+      prevImage(productId, images); // Swipe right → Previous image
+    }
+  };
+  
+  let startX = 0;
+  
   return (
     <div className="min-h-screen w-full relative">
       <div
@@ -345,7 +392,6 @@ const ProductPage = () => {
                     description: "",
                     netQty: "",
                     images: [],
-                    bgImage: "",
                   });
                 }
               }}
@@ -374,231 +420,261 @@ const ProductPage = () => {
           </div>
 
           {showForm && (
-        <div>
-          <h3 className="text-xl font-bold text-black mb-4 text-center">
-            {editMode ? "EDIT PRODUCT" : "ADD NEW PRODUCT"}
-          </h3>
-          
-          <div>
-            <label className="w-full border cursor-pointer p-2 rounded-lg mb-2 flex justify-center items-center gap-2 bg-white">
-              <BiSolidFileImage size={20} />
-              <span>
-                {fileNames.length ? fileNames.join(", ") : "Product Images"}
-              </span>
-              <input
-                type="file"
-                multiple
-                className="hidden"
-                onChange={handleImageUpload}
-                accept="image/*"
-              />
-            </label>
-          </div>
+            <div>
+              <h3 className="text-xl font-bold text-black mb-4 text-center">
+                {editMode ? "EDIT PRODUCT" : "ADD NEW PRODUCT"}
+              </h3>
 
-          {selectedImages.length > 0 && (
-            <div className="grid grid-cols-3 gap-2 mb-4">
-              {selectedImages.map((preview, index) => (
-                <img
-                  key={index}
-                  src={preview}
-                  alt={`Preview ${index}`}
-                  className="h-16 w-16 object-cover rounded"
-                />
-              ))}
+              <div>
+                <label className="w-full border cursor-pointer p-2 rounded-lg mb-2 flex justify-center items-center gap-2 bg-white">
+                  <BiSolidFileImage size={20} />
+                  <span>
+                    {fileNames.length ? fileNames.join(", ") : "Product Images"}
+                  </span>
+                  <input
+                    type="file"
+                    multiple
+                    className="hidden"
+                    onChange={handleImageUpload}
+                    accept="image/*"
+                  />
+                </label>
+              </div>
+
+              {selectedImages.length > 0 && (
+                <div className="grid grid-cols-3 gap-2 mb-4">
+                  {selectedImages.map((preview, index) => (
+                    <img
+                      key={index}
+                      src={preview}
+                      alt={`Preview ${index}`}
+                      className="h-16 w-16 object-cover rounded"
+                    />
+                  ))}
+                </div>
+              )}
+
+              <select
+                name="category"
+                value={productData.category}
+                onChange={handleChange}
+                className="w-full border p-2 rounded-lg mb-2 bg-white"
+              >
+                <option value="" disabled>
+                  Select Category
+                </option>
+                {categories.map((category, index) => (
+                  <option key={index} value={category.name}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+
+              <input
+                type="text"
+                name="name"
+                placeholder="Product Name"
+                value={productData.name}
+                onChange={handleChange}
+                className="w-full border p-2 rounded-lg mb-2 bg-white"
+              />
+
+              <input
+                type="text"
+                name="price"
+                placeholder="Price"
+                value={productData.price}
+                onChange={handleChange}
+                className="w-full border p-2 rounded-lg mb-2 bg-white"
+              />
+
+              <textarea
+                name="description"
+                placeholder="Description"
+                value={productData.description}
+                onChange={handleChange}
+                className="w-full border p-2 rounded-lg mb-2 bg-white"
+              />
+
+              <textarea
+                name="usage"
+                placeholder="Product Usage Instructions"
+                value={productData.usage}
+                onChange={handleChange}
+                className="w-full border p-2 rounded-lg mb-2 bg-white"
+              />
+
+              <input
+                type="text"
+                name="purpose"
+                placeholder="Purpose"
+                value={productData.purpose}
+                onChange={handleChange}
+                className="w-full border p-2 rounded-lg mb-2 bg-white"
+              />
+
+              <input
+                type="text"
+                name="netQty"
+                placeholder="Net Qty"
+                value={productData.netQty}
+                onChange={handleChange}
+                className="w-full border p-2 rounded-lg mb-2 bg-white"
+              />
+
+              <div className="mt-4 flex justify-center gap-2 w-full">
+                <button
+                  className="px-4 py-2 bg-[#8B6254] text-white rounded-lg w-full"
+                  onClick={() => {
+                    setShowForm(false);
+                    setEditMode(false);
+                    setSelectedProduct(null);
+                    resetForm();
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="px-4 py-2 bg-[#435933] hover:bg-[#304421] text-white rounded-lg w-full"
+                  onClick={handleSubmit}
+                >
+                  {editMode ? "Update" : "Submit"}
+                </button>
+              </div>
             </div>
           )}
-          
-          {/* Background image section removed */}
-          
-          <select
-            name="category"
-            value={productData.category}
-            onChange={handleChange}
-            className="w-full border p-2 rounded-lg mb-2 bg-white"
-          >
-            <option value="" disabled>
-              Select Category
-            </option>
-            {categories.map((category, index) => (
-              <option key={index} value={category.name}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-          
-          <input
-            type="text"
-            name="name"
-            placeholder="Product Name"
-            value={productData.name}
-            onChange={handleChange}
-            className="w-full border p-2 rounded-lg mb-2 bg-white"
-          />
-          
-          <input
-            type="text"
-            name="price"
-            placeholder="Price"
-            value={productData.price}
-            onChange={handleChange}
-            className="w-full border p-2 rounded-lg mb-2 bg-white"
-          />
-          
-          <textarea
-            name="description"
-            placeholder="Description"
-            value={productData.description}
-            onChange={handleChange}
-            className="w-full border p-2 rounded-lg mb-2 bg-white"
-          />
-          
-          <textarea
-            name="usage"
-            placeholder="Product Usage Instructions"
-            value={productData.usage}
-            onChange={handleChange}
-            className="w-full border p-2 rounded-lg mb-2 bg-white"
-          />
-          
-          <input
-            type="text"
-            name="purpose"
-            placeholder="Purpose"
-            value={productData.purpose}
-            onChange={handleChange}
-            className="w-full border p-2 rounded-lg mb-2 bg-white"
-          />
-          
-          <input
-            type="text"
-            name="netQty"
-            placeholder="Net Qty"
-            value={productData.netQty}
-            onChange={handleChange}
-            className="w-full border p-2 rounded-lg mb-2 bg-white"
-          />
-          
-          <div className="mt-4 flex justify-center gap-2 w-full">
-            <button
-              className="px-4 py-2 bg-[#8B6254] text-white rounded-lg w-full"
-              onClick={() => {
-                setShowForm(false);
-                setEditMode(false);
-                setSelectedProduct(null);
-                resetForm();
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              className="px-4 py-2 bg-[#435933] hover:bg-[#304421] text-white rounded-lg w-full"
-              onClick={handleSubmit}
-            >
-              {editMode ? "Update" : "Submit"}
-            </button>
-          </div>
-        </div>
-      )}
 
-{showProducts && (
-        <div className="mt-8 w-full backdrop-blur-xl p-4 rounded-lg shadow-lg">
-          <h3 className="text-xl font-bold text-black mb-4 text-center">
-            PRODUCT LIST
-          </h3>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[1000px] bg-white border rounded-lg">
-              <thead>
-                <tr className="bg-gray-200">
-                  <th className="p-2">Images</th>
-                  {/* bgImage column removed */}
-                  <th className="p-2">Name</th>
-                  <th className="p-2">Category</th>
-                  <th className="p-2">Price</th>
-                  <th className="p-2">Description</th>
-                  <th className="p-2">Purpose</th>
-                  <th className="p-2">Usage</th>
-                  <th className="p-2">Net Qty</th>
-                  <th className="p-2">Status</th>
-                  <th className="p-2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((product) => (
-                  <tr key={product.id} className="border-b text-center">
-                    <td className="p-2">
-                      <div className="flex flex-wrap gap-1 justify-center">
-                        {product.images?.map((img, index) => (
-                          <img
-                            key={index}
-                            src={img}
-                            alt={`Product ${index + 1}`}
-                            className="w-12 h-12 object-cover rounded cursor-pointer"
-                            onClick={() => window.open(img, "_blank")}
-                          />
-                        ))}
-                      </div>
-                    </td>
-                    {/* bgImage cell removed */}
-                    <td className="p-2">{product.name}</td>
-                    <td className="p-2">{product.category}</td>
-                    <td className="p-2">{product.price}</td>
-                    <td className="p-2 max-w-[200px]">
-                      <div className="truncate">
-                        {product.description}
-                      </div>
-                    </td>
-                    <td className="p-2">{product.purpose}</td>
-                    <td className="p-2">{product.usage}</td>
-                    <td className="p-2">{product.netQty}</td>
-                    <td className="p-2">
-                      <button
-                        className={`px-3 py-1 rounded-full text-sm ${
-                          product.status === "active"
-                            ? "bg-green-500 text-white"
-                            : "bg-red-500 text-white"
-                        }`}
-                        onClick={() => {
-                          // Toggle status in Firebase
-                          const newStatus =
-                            product.status === "active"
-                              ? "inactive"
-                              : "active";
-                          const productRef = ref(
-                            dbRealtime,
-                            `products/${product.id}`
-                          );
-                          update(productRef, { status: newStatus });
-                        }}
-                      >
-                        {product.status === "active"
-                          ? "Active"
-                          : "Inactive"}
-                      </button>
-                    </td>
-                    <td className="p-2">
-                      <div className="flex justify-center gap-2">
-                        <button
-                          className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-sm"
-                          onClick={() => handleEdit(product)}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm"
-                          onClick={() => handleDelete(product.id)}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-          
+          {showProducts && (
+            <div className="mt-8 w-full backdrop-blur-xl p-4 rounded-lg shadow-lg">
+              <h3 className="text-xl font-bold text-black mb-4 text-center">
+                PRODUCT LIST
+              </h3>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[1000px] bg-white border rounded-lg">
+                  <thead>
+                    <tr className="bg-gray-200">
+                      <th className="p-2">Images</th>
+                      <th className="p-2">Name</th>
+                      <th className="p-2">Category</th>
+                      <th className="p-2">Price</th>
+                      <th className="p-2">Description</th>
+                      <th className="p-2">Purpose</th>
+                      <th className="p-2">Usage</th>
+                      <th className="p-2">Net Qty</th>
+                      <th className="p-2">Status</th>
+                      <th className="p-2">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.map((product) => (
+                      <tr key={product.id} className="border-b text-center">
+                        <td className="p-2">
+                          {product.images && product.images.length > 0 ? (
+                            <div className="relative w-14 flex items-center justify-center">
+                              {/* Previous Button */}
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  prevImage(product.id, product.images);
+                                }}
+                                className="absolute left-0 z-10  text-black p-1 rounded-full opacity-70 hover:opacity-100"
+                              >
+                                <ChevronLeft size={16} />
+                              </button>
+
+                              {/* Swipeable Image */}
+                              <div
+                                className="w-18 h-18 flex justify-center items-center overflow-hidden rounded cursor-pointer"
+                                onTouchStart={(e) => handleTouchStart(e, product.id)}
+                                onTouchEnd={(e) => handleTouchEnd(e, product.id, product.images)}
+                                onClick={() => {
+                                  const imageIndex = currentProductId === product.id ? currentIndex : 0;
+                                  window.open(product.images[imageIndex], "_blank");
+                                }}
+                              >
+                                <img
+                                  src={currentProductId === product.id 
+                                    ? product.images[currentIndex] 
+                                    : product.images[0]}
+                                  alt={`Thumbnail`}
+                                  className="w-full h-full object-cover transition-transform duration-300"
+                                />
+                              </div>
+
+                              {/* Next Button */}
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  nextImage(product.id, product.images);
+                                }}
+                                className="absolute right-0 z-10  text-black p-1 rounded-full opacity-70 hover:opacity-100"
+                              >
+                                <ChevronRight size={16} />
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
+                              <BiSolidFileImage size={20} className="text-gray-400" />
+                            </div>
+                          )}
+                        </td>
+                        <td className="p-2">{product.name}</td>
+                        <td className="p-2">{product.category}</td>
+                        <td className="p-2">{product.price}</td>
+                        <td className="p-2 max-w-[200px]">
+                          <div className="truncate">{product.description}</div>
+                        </td>
+                        <td className="p-2">{product.purpose}</td>
+                        <td className="p-2">{product.usage}</td>
+                        <td className="p-2">{product.netQty}</td>
+                        <td className="p-2">
+                          <button
+                            className={`px-3 py-1 rounded-full text-sm ${
+                              product.status === "active"
+                                ? "bg-green-500 text-white"
+                                : "bg-red-500 text-white"
+                            }`}
+                            onClick={() => {
+                              // Toggle status in Firebase
+                              const newStatus =
+                                product.status === "active"
+                                  ? "inactive"
+                                  : "active";
+                              const productRef = ref(
+                                dbRealtime,
+                                `products/${product.id}`
+                              );
+                              update(productRef, { status: newStatus });
+                            }}
+                          >
+                            {product.status === "active"
+                              ? "Active"
+                              : "Inactive"}
+                          </button>
+                        </td>
+                        <td className="p-2">
+                          <div className="flex justify-center gap-2">
+                            <button
+                              className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-sm"
+                              onClick={() => handleEdit(product)}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm"
+                              onClick={() => handleDelete(product.id)}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

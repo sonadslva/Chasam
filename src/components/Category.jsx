@@ -245,7 +245,7 @@ const Category = () => {
 
             {/* VIEW CATEGORIES SECTION */}
             {showCategories && (
-              <div className="mt-8 w-full">
+              <div className="mt-8 w-full mb-5">
                 <h3 className="text-xl font-bold text-black mb-4 text-center">
                   UPLOADED CATEGORIES
                 </h3>
@@ -263,7 +263,7 @@ const Category = () => {
                           alt="Category"
                           className="w-full h-40 object-cover rounded-lg"
                         />
-                        <p className="text-black text-center mt-2 font-semibold">
+                        <p className="text-black text-center mt-2 font-bold">
                           {category.name}
                         </p>
                         <div className=" justify-center items-center flex gap-2">
