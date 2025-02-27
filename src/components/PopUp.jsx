@@ -79,20 +79,20 @@ useEffect(() => {
 }, [productId]);
 
   // Function to navigate to the next image
-  const nextImage = () => {
-    if (productImages.length <= 1) return;
-    setCurrentIndex((prevIndex) => 
-      prevIndex === productImages.length - 1 ? 0 : prevIndex + 1
-    );
-  };
+  // const nextImage = () => {
+  //   if (productImages.length <= 1) return;
+  //   setCurrentIndex((prevIndex) => 
+  //     prevIndex === productImages.length - 1 ? 0 : prevIndex + 1
+  //   );
+  // };
 
-  // Function to navigate to the previous image
-  const prevImage = () => {
-    if (productImages.length <= 1) return;
-    setCurrentIndex((prevIndex) => 
-      prevIndex === 0 ? productImages.length - 1 : prevIndex - 1
-    );
-  };
+  // // Function to navigate to the previous image
+  // const prevImage = () => {
+  //   if (productImages.length <= 1) return;
+  //   setCurrentIndex((prevIndex) => 
+  //     prevIndex === 0 ? productImages.length - 1 : prevIndex - 1
+  //   );
+  // };
 
   if (loading) {
     return (
@@ -113,7 +113,31 @@ useEffect(() => {
       </div>
     );
   }
-  
+  // const [currentIndex, setCurrentIndex] = useState(0);
+  let startX = 0;
+
+  const prevImage = () => {
+    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : productImages.length - 1));
+  };
+
+  const nextImage = () => {
+    setCurrentIndex((prev) => (prev < productImages.length - 1 ? prev + 1 : 0));
+  };
+
+  const handleTouchStart = (e) => {
+    startX = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    const endX = e.changedTouches[0].clientX;
+    const diff = startX - endX;
+
+    if (diff > 50) {
+      nextImage(); // Swipe left (next image)
+    } else if (diff < -50) {
+      prevImage(); // Swipe right (previous image)
+    }
+  };
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 bg-[#178000] z-[999]">
       <div className="absolute w-full bottom-0 py-2 bg-[#fff] z-[999] flex justify-center items-center gap-5 BoxShadow">
@@ -147,36 +171,28 @@ useEffect(() => {
             </div>
 
             {/* Main Image Slider */}
-            <div className="w-full flex justify-center items-center  rounded-2xl h-[340px] backdrop-blur-sm  mb-2 BoxShadow  relative overflow-hidden">
-              {/* Background Image
-              <div className="w-full h-[300px] absolute">
-                <img
-                  src={bgImage || product.bgImage || ""}
-                  alt="Background"
-                  className="w-full h-full object-cover opacity-90"
-                />
-              </div> */}
+            <div
+              className="w-full flex justify-center items-center rounded-2xl h-[340px] backdrop-blur-sm mb-2 BoxShadow relative overflow-hidden"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
+              {/* Background Image */}
+              {/* <div className="w-full h-[300px] absolute">
+        <img src={bgImage || product.bgImage || ""} alt="Background" className="w-full h-full object-cover opacity-90" />
+      </div> */}
 
               {/* Product Image */}
-              {productImages.length > 0 ? (
-                <div className="w-full h-full flex justify-center items-center z-10">
-                  <img
-                    src={productImages[currentIndex]}
-                    alt={`${product.name || "Product"} - Image ${
-                      currentIndex + 1
-                    }`}
-                    className="w-full h-full object-contain drop-shadow-md"
-                  />
-                </div>
-              ) : (
-                <div className="w-full h-full flex justify-center items-center z-10">
-                  <img
-                    src={li1}
-                    alt="Default Product"
-                    className="w-full h-full object-contain drop-shadow-md"
-                  />
-                </div>
-              )}
+              <div className="w-full h-full flex justify-center items-center z-10">
+                <img
+                  src={
+                    productImages.length > 0 ? productImages[currentIndex] : li1
+                  }
+                  alt={`${product?.name || "Product"} - Image ${
+                    currentIndex + 1
+                  }`}
+                  className="w-full h-full object-contain drop-shadow-md"
+                />
+              </div>
 
               {/* Navigation Arrows - Only show if multiple images */}
               {productImages.length > 1 && (
@@ -199,7 +215,7 @@ useEffect(() => {
                 </>
               )}
 
-              {/* Pagination Indicators - Only show if multiple images */}
+              {/* Pagination Indicators */}
               {productImages.length > 1 && (
                 <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 z-20">
                   {productImages.map((_, index) => (
@@ -252,9 +268,9 @@ useEffect(() => {
               </div>
             </div>
 
-            <div className="px-4 text-[12px] text-[#000000] mb-3 font-semibold BoxShadow">
-              <h3 className="text-[14px] font-bold mb-2">Indication</h3>
-              <div className="flex flex-col gap-1">
+            <div className="px-4 py-4 text-[12px] text-[#000000] mb-3 font-semibold BoxShadow">
+              <h3 className="text-[16px] font-bold mb-2">Indication</h3>
+              <div className="flex flex-col gap-1 ">
                 {product.features && product.features.length > 0 ? (
                   product.features.map((feature, index) => (
                     <div key={index} className="flex items-start">
@@ -263,7 +279,6 @@ useEffect(() => {
                   ))
                 ) : (
                   <div className="flex items-start">
-                  
                     <span>
                       {product.description || "No description available"}
                     </span>
@@ -289,16 +304,17 @@ useEffect(() => {
                   className="flex items-center cursor-pointer"
                   onClick={() => setShowOtherDetails(!showOtherDetails)}
                 >
-                  {showOtherDetails ? 
-                  <div className="flex items-center gap-0.5">
-                    <FiMinus/>
-                    Less
-                  </div> : 
-                  <div className="flex items-center gap-0.5">
-                    <FiPlus />
-                    More
-                  </div>}
-                  
+                  {showOtherDetails ? (
+                    <div className="flex items-center gap-0.5">
+                      <FiMinus />
+                      Less
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-0.5">
+                      <FiPlus />
+                      More
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
