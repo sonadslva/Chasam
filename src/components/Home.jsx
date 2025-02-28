@@ -212,7 +212,7 @@ const Home = () => {
       </section>
       {/* Footer */}
       <section className="w-full flex flex-col justify-center items-center bg-[#000000] h-auto mb-[53px] lg:mb-[90px]">
-        <div className="bg-gradient-to-r w-full from-[#8d8d8d] via-[#ffffff] to-[#3E7B27] pt-[5px]  backdrop-blur-3xl">
+        <div className=" w-full  backdrop-blur-3xl">
           <div className="w-full h-full `rounded-[calc(1.5rem-1px)] bg-[#000] py-5">
             <div className="text-center font-bold text-lg text-[#fff] lg:text-4xl lg:mb-2">
               Vythiri Care

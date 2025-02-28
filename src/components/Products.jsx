@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { dbRealtime } from "../firebaseConfig";
 import { ref, onValue } from "firebase/database";
 import { CgSearch } from "react-icons/cg";
@@ -21,6 +21,8 @@ const Products = () => {
   const [banners, setBanners] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [isFixed, setIsFixed] = useState(false);
+  const productRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -136,6 +138,10 @@ const Products = () => {
   const handleCategorySelect = (categoryId) => {
     setSelectedCategory(categoryId);
     setSearchQuery(""); // Reset search when changing category
+    window.scrollTo({
+      top: -50,
+      behavior: "smooth", // Smooth scrolling effect
+    });
   };
 
   // Fetch banners
@@ -248,8 +254,8 @@ const Products = () => {
           </div>
 
           {/* category */}
-          <div className="mb-5 overflow-x-auto relative scrollBar px-2">
-            <ul className="flex items-center lg:justify-center gap-2 font-semibold">
+          <div className="mb-5 overflow-x-auto relative whitespace-nowrap w-full scrollBar">
+            <ul className="flex items-center lg:justify-center gap-2 font-semibold flex-shrink-0 min-w-fit px-4">
               {/* Add ALL option */}
               <li
                 className="flex justify-center items-center flex-col text-[12px] font-semibold gap-1 cursor-pointer"
@@ -339,18 +345,15 @@ const Products = () => {
                     <div className="text-[#000] font-bold TextFont1">
                       {product.name}
                     </div>
-                    <div className="text-[#000] font-base flex items-center mb-2">
+                    <div className="text-[#000] font-base flex items-center">
                     <MdCurrencyRupee />
                       <span className="text-[17px] font-bold">
                         {product.price}
                       </span>
                     </div>
-                    <div className="flex items-center   rounded-full  bottom-2 w-full mx-auto justify-end bgGradient relative p-1">
-                      <div className="absolute w-6 h-6 rounded-full bg-[#E3D6C2] left-1 "></div>
-                    <div className="flex items-center justify-center gap-1.5 text-white">
-                      view<IoIosArrowRoundForward className="text-white " />
-                      </div>
-                  </div>
+                    <div className="flex justify-start items-center gap-0.5 text-sm font-medium mb-2">
+                      View More <IoIosArrowRoundForward className="text-xl"/>
+                    </div>
                   </div>
                   
                 </div>

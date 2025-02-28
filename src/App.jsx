@@ -22,15 +22,19 @@ const App = () => {
 const MainLayout = () => {
   const location = useLocation();
   const hideNavbarPaths = ["/login", "/admin", "/imagebanner", "/product", "/category"];
-  const [showIntro, setShowIntro] = useState(true);
+  const [showIntro, setShowIntro] = useState(false);
 
   useEffect(() => {
-    setShowIntro(true); // Reset intro on every route change
-    const timer = setTimeout(() => {
-      setShowIntro(false);
-    }, 3000);
+    if (location.pathname === "/") {
+      setShowIntro(true); // Show intro only on the Home page
+      const timer = setTimeout(() => {
+        setShowIntro(false);
+      }, 3000);
 
-    return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
+    } else {
+      setShowIntro(false); // Hide intro on other pages
+    }
   }, [location.pathname]); // Run every time the route changes
 
   return (
