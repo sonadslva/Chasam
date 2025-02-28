@@ -11,7 +11,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-
+import { MdCurrencyRupee } from "react-icons/md";
+import { IoIosArrowRoundForward } from "react-icons/io";
 const Products = () => {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
@@ -314,18 +315,18 @@ const Products = () => {
 
       {/* product list */}
       <section className="w-full px-2 mb-16 md:py-8">
-        <div className="w-full flex flex-col md:grid md:grid-cols-2 gap-2 relative z-20 mb-2">
+        <div className="w-full grid grid-cols-2 place-items-center  md:grid md:grid-cols-2 gap-2 relative z-20 mb-2">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <div key={product.id} className="w-full ">
                 <div
-                  className="w-full relative flex gap-3 drop-shadow-sm h-[80px] p-1 ProductListBox backdrop-blur-sm rounded-xl border border-[#fff] bg-[#166000]"
+                  className="w-full relative flex flex-col gap-3 drop-shadow-sm h-[250px] p-1  backdrop-blur-sm rounded-xl border border-[#fff] bg-[#fff]"
                   onClick={() => {
                     setSelectedProductId(product.id);
                     setOpenPopUp(true);
                   }}
                 >
-                  <div className="w-[70px] h-[70px] rounded-xl border-[#fff] border overflow-hidden ">
+                  <div className="w-full h-[150px] rounded-xl border-[#fff] border overflow-hidden ">
                     <img
                       src={
                         product.image || (product.images && product.images[0])
@@ -334,20 +335,24 @@ const Products = () => {
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <div className="text-[#fff] font-bold TextFont1">
+                  <div className="flex flex-col gap- bg-amber-100 w-full px-2  rounded-b-xl">
+                    <div className="text-[#000] font-bold TextFont1">
                       {product.name}
                     </div>
-                    <div className="text-[#fff] text-xl font-base flex gap-0.5 items-center">
-                      <TbCoinRupee />
+                    <div className="text-[#000] font-base flex items-center mb-2">
+                    <MdCurrencyRupee />
                       <span className="text-[17px] font-bold">
                         {product.price}
                       </span>
                     </div>
+                    <div className="flex items-center   rounded-full  bottom-2 w-full mx-auto justify-end bgGradient relative p-1">
+                      <div className="absolute w-6 h-6 rounded-full bg-[#E3D6C2] left-1 "></div>
+                    <div className="flex items-center justify-center gap-1.5 text-white">
+                      view<IoIosArrowRoundForward className="text-white " />
+                      </div>
                   </div>
-                  <div className="absolute right-2 rounded-full bg-[#fff] top-2">
-                    <MdOutlineArrowDropDown />
                   </div>
+                  
                 </div>
               </div>
             ))

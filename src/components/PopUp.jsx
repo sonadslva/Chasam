@@ -11,7 +11,7 @@ import { ref, onValue } from "firebase/database";
 import { dbRealtime } from "../firebaseConfig";
 // Add missing imports for the chevron icons
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { div } from "framer-motion/client";
+
 import { FiMinus } from "react-icons/fi";
 
 const PopUp = ({ openPopUp, setOpenPopUp, productId }) => {
