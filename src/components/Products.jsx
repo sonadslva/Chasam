@@ -4,7 +4,7 @@ import { ref, onValue } from "firebase/database";
 import { CgSearch } from "react-icons/cg";
 import { TbCoinRupee } from "react-icons/tb";
 import { MdOutlineArrowDropDown } from "react-icons/md";
-import leaft2 from "../assets/leaf2.png";
+import leaft2 from "../assets/VYTHITI2.png";
 import PopUp from "./PopUp";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -177,28 +177,27 @@ const Products = () => {
       </div>
 
       {/* top section */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden ">
         <div>
-        <div className="w-[600px] md:w-[1200px] md:h-[1200px] lg:w-[1600px] lg:h-[1600px] BannerCircle lg:top-[-900px] z-0 absolute h-[600px] rounded-full md:top-[-550px] top-[-290px] bgGradient overflow-hidden"></div>
-        <div className="w-[600px] md:w-[1200px] md:h-[1200px] -z-10 absolute h-[600px] BannerCircle2 rounded-full top-[-270px] lg:top-[-880px] md:top-[-520px] bgGradient opacity-30 "></div>
-          <div className=" absolute w-[100px] h-[100px] rotate-90 left-[-10px] drop-shadow-md">
+          <div className="w-[600px] md:w-[1200px] md:h-[1200px] lg:w-[1600px] lg:h-[1600px] BannerCircle lg:top-[-900px] z-0 absolute h-[600px] rounded-full md:top-[-550px] top-[-290px] bgGradient overflow-hidden"></div>
+          <div className="w-[600px] md:w-[1200px] md:h-[1200px] -z-10 absolute h-[600px] BannerCircle2 rounded-full top-[-270px] lg:top-[-880px] md:top-[-520px] bgGradient opacity-30 "></div>
+          <div className=" absolute w-[70px] h-[70px]  left-[10px] top-2 drop-shadow-md pb-5">
             <img src={leaft2} alt="" />
           </div>
           <div className="relative text-[#fff] pr-2 pt-5 leading-tight mb-5">
             <div className="text-[12px]  text-[#B1C29E] text-end font-semibold">
-            Leading Spice Retailer in Wayanad
+              Leading Spice Retailer in Wayanad
             </div>
             <div className="text-2xl text-end font-bold TextFont1 ">
-            Chasam Ayurvedic 
-            
+              Chasam Ayurvedic
             </div>
             <div className="text-[12px] text-[#B1C29E] text-end font-semibold">
-            Authentic Ayurvedic & Spice Products
+              Authentic Ayurvedic & Spice Products
             </div>
           </div>
 
           {/* banner */}
-          <div className="px-2 mb-3  relative">
+          <div className="px-2 mb-3  relative mt-2">
             {banners.length > 1 ? (
               <Swiper
                 modules={[Pagination, Autoplay]}
@@ -346,16 +345,15 @@ const Products = () => {
                       {product.name}
                     </div>
                     <div className="text-[#000] font-base flex items-center">
-                    <MdCurrencyRupee />
+                      <MdCurrencyRupee />
                       <span className="text-[17px] font-bold">
                         {product.price}
                       </span>
                     </div>
                     <div className="flex justify-start items-center gap-0.5 text-sm font-medium mb-2">
-                      View More <IoIosArrowRoundForward className="text-xl"/>
+                      View More <IoIosArrowRoundForward className="text-xl" />
                     </div>
                   </div>
-                  
                 </div>
               </div>
             ))
