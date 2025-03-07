@@ -19,6 +19,7 @@ import pbg2 from "../assets/pbg2.jpeg";
 import { BiSolidFileImage } from "react-icons/bi";
 import { BsStarFill } from "react-icons/bs"; // Added for marking main image
 import imgbbg from "../assets/imgbg.jpeg";
+import defaultProductImage from "../assets/product-default.png"; // Added default product image
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 const ProductPage = () => {
@@ -45,6 +46,7 @@ const ProductPage = () => {
   });
   
   const [isScrolled, setIsScrolled] = useState(false);
+  const [defaultImageBase64, setDefaultImageBase64] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,6 +60,23 @@ const ProductPage = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Load and convert default image to base64 on component mount
+  useEffect(() => {
+    const preloadDefaultImage = async () => {
+      try {
+        const response = await fetch(defaultProductImage);
+        const blob = await response.blob();
+        const base64DefaultImage = await convertImageToBase64(blob);
+        setDefaultImageBase64(base64DefaultImage);
+      } catch (error) {
+        console.error("Error loading default image:", error);
+      }
+    };
+    
+    preloadDefaultImage();
+  }, []);
+
   const [selectedImages, setSelectedImages] = useState([]);
   const [fileNames, setFileNames] = useState([]);
 
@@ -137,8 +156,16 @@ const ProductPage = () => {
     }
   
     try {
-      // Prepare the images array with the main image as the first one
-      const orderedImages = getOrderedImages(productData.images, productData.mainImageIndex);
+      // Determine what images to use - either user uploaded or default
+      let orderedImages = [];
+      
+      if (productData.images && productData.images.length > 0) {
+        // Use the user's uploaded images if available
+        orderedImages = getOrderedImages(productData.images, productData.mainImageIndex);
+      } else if (defaultImageBase64) {
+        // Use the default image if no images were uploaded
+        orderedImages = [defaultImageBase64];
+      }
       
       // Create a copy of productData with ordered images
       const dataToSave = { 
@@ -164,12 +191,14 @@ const ProductPage = () => {
           const imageData = {
             images: orderedImages,
           };
-  
           await updateDoc(firestoreDocRef, imageData);
         } else {
-          console.warn(
-            "No existing Firestore document found, skipping update."
-          );
+          // Create a new document if it doesn't exist
+          const firestoreData = {
+            productId: selectedProduct.id,
+            images: orderedImages,
+          };
+          await addDoc(collection(dbFirestore, "productImages"), firestoreData);
         }
   
         alert("Product updated successfully!");
@@ -178,15 +207,13 @@ const ProductPage = () => {
         const productsRef = ref(dbRealtime, "products");
         const newProductRef = await push(productsRef, dataToSave);
   
-        // Store images in Firestore only if images exist
-        if (orderedImages.length > 0) {
-          const firestoreData = {
-            productId: newProductRef.key,
-            images: orderedImages,
-          };
+        // Store images in Firestore (will always have at least the default image)
+        const firestoreData = {
+          productId: newProductRef.key,
+          images: orderedImages,
+        };
   
-          await addDoc(collection(dbFirestore, "productImages"), firestoreData);
-        }
+        await addDoc(collection(dbFirestore, "productImages"), firestoreData);
   
         alert("Product added successfully!");
       }
@@ -254,6 +281,9 @@ const ProductPage = () => {
       setSelectedImages(product.images);
       // Create dummy file names based on image count
       setFileNames(product.images.map((_, index) => `image-${index + 1}.jpg`));
+    } else {
+      setSelectedImages([]);
+      setFileNames([]);
     }
   };
 
@@ -499,7 +529,7 @@ const ProductPage = () => {
                 <label className="w-full border cursor-pointer p-2 rounded-lg mb-2 flex justify-center items-center gap-2 bg-white">
                   <BiSolidFileImage size={20} />
                   <span>
-                    {fileNames.length ? fileNames.join(", ") : "Product Images"}
+                    {fileNames.length ? fileNames.join(", ") : "Product Images (Optional)"}
                   </span>
                   <input
                     type="file"
@@ -633,98 +663,97 @@ const ProductPage = () => {
             </div>
           )}
 
-{showProducts && (
-  <div className="mt-8 w-full backdrop-blur-xl p-4 rounded-lg shadow-lg">
-    <h3 className="text-xl font-bold text-black mb-4 text-center">
-      PRODUCT LIST
-    </h3>
-    
-    {/* Scrollable container */}
-    <div className="overflow-auto max-h-[500px]">
-      <table className="w-full min-w-[1000px] bg-white border rounded-lg">
-        <thead className="sticky top-0 bg-gray-200 z-10 shadow-md">
-          <tr>
-            <th className="p-2">Images</th>
-            <th className="p-2">Name</th>
-            <th className="p-2">Category</th>
-            <th className="p-2">Price</th>
-            <th className="p-2">Description</th>
-            <th className="p-2">Purpose</th>
-            <th className="p-2">Usage</th>
-            <th className="p-2">Net Qty</th>
-            <th className="p-2">Status</th>
-            <th className="p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product) => (
-            <tr key={product.id} className="border-b border-r text-center">
-              <td className="p-2">
-                {product.images && product.images.length > 0 ? (
-                  <div className="w-12 h-12 cursor-pointer">
-                    <img
-                      src={product.images[0]}
-                      alt="Thumbnail"
-                      className="w-full h-full object-cover rounded"
-                      onClick={() => openImageModal(product.images, 0)}
-                    />
-                  </div>
-                ) : (
-                  <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
-                    <BiSolidFileImage size={20} className="text-gray-400" />
-                  </div>
-                )}
-              </td>
-              <td className="p-2">{product.name}</td>
-              <td className="p-2">{product.category}</td>
-              <td className="p-2">{product.price}</td>
-              <td className="p-2 max-w-[200px]">
-                <div className="truncate">{product.description}</div>
-              </td>
-              <td className="p-2">{product.purpose}</td>
-              <td className="p-2">{product.usage}</td>
-              <td className="p-2">{product.netQty}</td>
-              <td className="p-2">
-                <button
-                  className={`px-3 py-1 rounded-full text-sm ${
-                    product.status === "active"
-                      ? "bg-green-500 text-white"
-                      : "bg-red-500 text-white"
-                  }`}
-                  onClick={() => {
-                    const newStatus =
-                      product.status === "active" ? "inactive" : "active";
-                    const productRef = ref(dbRealtime, `products/${product.id}`);
-                    update(productRef, { status: newStatus });
-                  }}
-                >
-                  {product.status === "active" ? "Active" : "Inactive"}
-                </button>
-              </td>
-              <td className="p-2">
-                <div className="flex justify-center gap-2">
-                  <button
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-sm"
-                    onClick={() => handleEdit(product)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm"
-                    onClick={() => handleDelete(product.id)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  </div>
-)}
-
+          {showProducts && (
+            <div className="mt-8 w-full backdrop-blur-xl p-4 rounded-lg shadow-lg">
+              <h3 className="text-xl font-bold text-black mb-4 text-center">
+                PRODUCT LIST
+              </h3>
+              
+              {/* Scrollable container */}
+              <div className="overflow-auto max-h-[500px]">
+                <table className="w-full min-w-[1000px] bg-white border rounded-lg">
+                  <thead className="sticky top-0 bg-gray-200 z-10 shadow-md">
+                    <tr>
+                      <th className="p-2">Images</th>
+                      <th className="p-2">Name</th>
+                      <th className="p-2">Category</th>
+                      <th className="p-2">Price</th>
+                      <th className="p-2">Description</th>
+                      <th className="p-2">Purpose</th>
+                      <th className="p-2">Usage</th>
+                      <th className="p-2">Net Qty</th>
+                      <th className="p-2">Status</th>
+                      <th className="p-2">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.map((product) => (
+                      <tr key={product.id} className="border-b border-r text-center">
+                        <td className="p-2">
+                          {product.images && product.images.length > 0 ? (
+                            <div className="w-12 h-12 cursor-pointer">
+                              <img
+                                src={product.images[0]}
+                                alt="Thumbnail"
+                                className="w-full h-full object-cover rounded"
+                                onClick={() => openImageModal(product.images, 0)}
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
+                              <BiSolidFileImage size={20} className="text-gray-400" />
+                            </div>
+                          )}
+                        </td>
+                        <td className="p-2">{product.name}</td>
+                        <td className="p-2">{product.category}</td>
+                        <td className="p-2">{product.price}</td>
+                        <td className="p-2 max-w-[200px]">
+                          <div className="truncate">{product.description}</div>
+                        </td>
+                        <td className="p-2">{product.purpose}</td>
+                        <td className="p-2">{product.usage}</td>
+                        <td className="p-2">{product.netQty}</td>
+                        <td className="p-2">
+                          <button
+                            className={`px-3 py-1 rounded-full text-sm ${
+                              product.status === "active"
+                                ? "bg-green-500 text-white"
+                                : "bg-red-500 text-white"
+                            }`}
+                            onClick={() => {
+                              const newStatus =
+                                product.status === "active" ? "inactive" : "active";
+                              const productRef = ref(dbRealtime, `products/${product.id}`);
+                              update(productRef, { status: newStatus });
+                            }}
+                          >
+                            {product.status === "active" ? "Active" : "Inactive"}
+                          </button>
+                        </td>
+                        <td className="p-2">
+                          <div className="flex justify-center gap-2">
+                            <button
+                              className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-sm"
+                              onClick={() => handleEdit(product)}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm"
+                              onClick={() => handleDelete(product.id)}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
