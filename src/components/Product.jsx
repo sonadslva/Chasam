@@ -150,8 +150,9 @@ const ProductPage = () => {
   };
 
   const handleSubmit = async () => {
-    if (!productData.name || !productData.price) {
-      alert("Please fill all required fields");
+    // Modified validation - only check for name and category
+    if (!productData.name || !productData.category) {
+      alert("Please provide a product name and select a category");
       return;
     }
   
@@ -170,6 +171,12 @@ const ProductPage = () => {
       // Create a copy of productData with ordered images
       const dataToSave = { 
         ...productData,
+        // Allow empty fields to be saved as null or empty string
+        price: productData.price || "",
+        purpose: productData.purpose || "",
+        description: productData.description || "",
+        usage: productData.usage || "",
+        netQty: productData.netQty || "",
         images: orderedImages,
         mainImageIndex: 0, // After reordering, the main image is always at index 0
         status: editMode ? productData.status : "active"
@@ -223,6 +230,7 @@ const ProductPage = () => {
       setEditMode(false);
       setSelectedImages([]);
       setSelectedProduct(null);
+      setShowProducts(true)
       setProductData({
         name: "",
         category: "",
@@ -275,6 +283,7 @@ const ProductPage = () => {
     setEditMode(true);
     setShowForm(true);
     setShowProducts(false);
+    
 
     // Set image previews for product images
     if (product.images && product.images.length > 0) {
@@ -578,9 +587,10 @@ const ProductPage = () => {
                 value={productData.category}
                 onChange={handleChange}
                 className="w-full border p-2 rounded-lg mb-2 bg-white"
+                required
               >
                 <option value="" disabled>
-                  Select Category
+                  Select Category *
                 </option>
                 {categories.map((category, index) => (
                   <option key={index} value={category.name}>
@@ -592,16 +602,17 @@ const ProductPage = () => {
               <input
                 type="text"
                 name="name"
-                placeholder="Product Name"
+                placeholder="Product Name *"
                 value={productData.name}
                 onChange={handleChange}
                 className="w-full border p-2 rounded-lg mb-2 bg-white"
+                required
               />
 
               <input
                 type="text"
                 name="price"
-                placeholder="Price"
+                placeholder="Price (Optional)"
                 value={productData.price}
                 onChange={handleChange}
                 className="w-full border p-2 rounded-lg mb-2 bg-white"
@@ -609,7 +620,7 @@ const ProductPage = () => {
 
               <textarea
                 name="description"
-                placeholder="Description"
+                placeholder="Description (Optional)"
                 value={productData.description}
                 onChange={handleChange}
                 className="w-full border p-2 rounded-lg mb-2 bg-white"
@@ -617,7 +628,7 @@ const ProductPage = () => {
 
               <textarea
                 name="usage"
-                placeholder="Product Usage Instructions"
+                placeholder="Product Usage Instructions (Optional)"
                 value={productData.usage}
                 onChange={handleChange}
                 className="w-full border p-2 rounded-lg mb-2 bg-white"
@@ -626,7 +637,7 @@ const ProductPage = () => {
               <input
                 type="text"
                 name="purpose"
-                placeholder="Purpose"
+                placeholder="Purpose (Optional)"
                 value={productData.purpose}
                 onChange={handleChange}
                 className="w-full border p-2 rounded-lg mb-2 bg-white"
@@ -635,7 +646,7 @@ const ProductPage = () => {
               <input
                 type="text"
                 name="netQty"
-                placeholder="Net Qty"
+                placeholder="Net Qty (Optional)"
                 value={productData.netQty}
                 onChange={handleChange}
                 className="w-full border p-2 rounded-lg mb-2 bg-white"
@@ -707,13 +718,13 @@ const ProductPage = () => {
                         </td>
                         <td className="p-2">{product.name}</td>
                         <td className="p-2">{product.category}</td>
-                        <td className="p-2">{product.price}</td>
+                        <td className="p-2">{product.price || "-"}</td>
                         <td className="p-2 max-w-[200px]">
-                          <div className="truncate">{product.description}</div>
+                          <div className="truncate">{product.description || "-"}</div>
                         </td>
-                        <td className="p-2">{product.purpose}</td>
-                        <td className="p-2">{product.usage}</td>
-                        <td className="p-2">{product.netQty}</td>
+                        <td className="p-2">{product.purpose || "-"}</td>
+                        <td className="p-2">{product.usage || "-"}</td>
+                        <td className="p-2">{product.netQty || "-"}</td>
                         <td className="p-2">
                           <button
                             className={`px-3 py-1 rounded-full text-sm ${
