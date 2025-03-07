@@ -131,9 +131,13 @@ const Home = () => {
               </div>
             </div>
             <div className="hidden md:flex md:relative text-[#fff]">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit
-              adipisci corrupti itaque unde, cum reiciendis labore optio fugit
-              pariatur voluptate asperiores perferendis Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit exercitationem doloremque deleniti ut pariatur fugiat maxime magni, explicabo tenetur iusto libero, odit a vel officia tempore in amet earum! Laudantium!
+            <p className="mt-4 text-lg md:text-xl text-white font-medium">
+              Chasam Ayurvedic & Spice Garden Shop offers pure Ayurvedic
+              products, exotic spices, and natural remedies sourced from nature.
+              We provide herbal supplements, organic spices, essential oils, and
+              handcrafted wellness products to support a healthy lifestyle.
+            </p>
+            
             </div>
           </div>
           {/* banner */}
