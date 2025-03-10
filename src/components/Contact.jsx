@@ -9,7 +9,9 @@ import { RiInstagramFill } from "react-icons/ri";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { FaChevronCircleLeft } from "react-icons/fa";
 import wave from "../assets/waveorg.png"
-
+import { MdLocationPin } from "react-icons/md";
+import imglocation from '../assets/location.png'
+import { AiFillGoogleCircle } from "react-icons/ai";
 const Contact = () => {
   const [result, setResult] = React.useState("");
 
@@ -126,6 +128,14 @@ const Contact = () => {
 
           {/* Social Media */}
           <div className="flex justify-center items-center gap-4 border-t w-full pt-3 border-[#fff]">
+          <a
+              href="https://search.google.com/local/writereview?placeid=ChIJG6gdUlVzpjsR8Sj5q9DT2h4"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-2xl text-[#fff]"
+            >
+              <AiFillGoogleCircle />
+            </a>
             <div className="text-2xl text-[#fff]">
               <BiLogoFacebookCircle />
             </div>
@@ -144,6 +154,14 @@ const Contact = () => {
               className="text-2xl text-[#fff]"
             >
               <IoLogoWhatsapp />
+            </a>
+            <a
+              href="https://maps.app.goo.gl/sFaWva2sS49HMHip7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-2xl text-[#fff]"
+            >
+              <MdLocationPin />
             </a>
           </div>
         </div>
