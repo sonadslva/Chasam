@@ -10,6 +10,8 @@ import Product from "./components/Product";
 import Category from "./components/Category";
 import Producthome from "./components/Products";  
 import Contact from "./components/Contact";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { Navigate } from "react-router-dom";
 
 const App = () => {
   return (
@@ -36,6 +38,32 @@ const MainLayout = () => {
       setShowIntro(false); // Hide intro on other pages
     }
   }, [location.pathname]); // Run every time the route changes
+  const [loader, setLoader] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsAuthenticated(!!user);
+    });
+
+    const timer = setTimeout(() => {
+      setLoader(false);
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+      unsubscribe();
+    };
+  }, []);
+
+  const ProtectedRoute = ({ element }) => {
+    if (!isAuthenticated) {
+      return <Navigate to="/login" replace />;
+    }
+    return element;
+  };
+  
 
   return (
     <>
@@ -44,12 +72,12 @@ const MainLayout = () => {
         <Introduction />
       ) : (
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home />}  />
           <Route path="/login" element={<Login />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/imagebanner" element={<ImageBanner />} />
-          <Route path="/product" element={<Product />} />
-          <Route path="/category" element={<Category />} />
+          <Route path="/admin" element={<ProtectedRoute element={<Admin/>} />}/>
+          <Route path="/imagebanner" element={<ProtectedRoute element={<ImageBanner />} />}/>
+          <Route path="/product" element={<ProtectedRoute element={<Product />} />} />
+          <Route path="/category"  element={<ProtectedRoute element={<Category />} />}  />
           <Route path="/products" element={<Producthome />} />
           <Route path="/contact" element={<Contact />} />
         </Routes>

@@ -4,11 +4,23 @@ import { FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/chasam.png";
 import Adminbg from "../assets/adminbg.jpeg";
+import { getAuth, signOut,onAuthStateChanged  } from "firebase/auth";
 import AdminNav from "./AdminNav";
 
 const Admin = ({}) => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [ isAuthenticated, setIsAuthenticated ] = useState(true)
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsAuthenticated(!!user); // Update based on auth state
+    });
+  
+    return () => unsubscribe();
+  }, []);
+  
 
   // Toggle the menu
   const toggleMenu = (e) => {
@@ -24,8 +36,15 @@ const Admin = ({}) => {
   };
   
   const handleLogout = () => {
-    // Perform logout logic here (e.g., Firebase sign-out)
-    navigate("/login"); // Redirect to login after logout
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        setIsAuthenticated(false); // Explicitly update state
+        navigate("/login"); // Redirect to login
+      })
+      .catch((error) => {
+        console.error("Logout Error:", error);
+      });
   };
   
   const [isScrolled, setIsScrolled] = useState(false);
