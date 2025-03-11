@@ -10,6 +10,8 @@ import imgb1 from "../assets/imgb1.jpeg";
 import imgb2 from "../assets/imgb2.jpeg";
 import { BiSolidFileImage } from "react-icons/bi";
 import imgbgb from "../assets/imgbg.jpeg";
+import { getAuth, signOut,onAuthStateChanged  } from "firebase/auth";
+
 
 const ImageBanner = () => {
   const navigate = useNavigate();
@@ -31,9 +33,26 @@ const ImageBanner = () => {
       }
     });
   }, []);
+const [ isAuthenticated, setIsAuthenticated ] = useState(true)
 
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsAuthenticated(!!user); // Update based on auth state
+    });
+  
+    return () => unsubscribe();
+  }, []);
   const handleLogout = () => {
-    navigate("/login");
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        setIsAuthenticated(false); // Explicitly update state
+        navigate("/login"); // Redirect to login
+      })
+      .catch((error) => {
+        console.error("Logout Error:", error);
+      });
   };
 
   const toggleMenu = (e) => {

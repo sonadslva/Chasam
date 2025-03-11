@@ -10,6 +10,8 @@ import { BiSolidFileImage } from "react-icons/bi";
 import categoryBg from "../assets/imgbg.jpeg";
 import catbg1 from "../assets/catbg1.jpg";
 import catbg2 from "../assets/catbg2.jpg";
+import { getAuth, signOut,onAuthStateChanged  } from "firebase/auth";
+
 
 const Category = () => {
   const navigate = useNavigate();
@@ -21,6 +23,16 @@ const Category = () => {
   const [categories, setCategories] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentCategoryId, setCurrentCategoryId] = useState(null);
+const [ isAuthenticated, setIsAuthenticated ] = useState(true)
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsAuthenticated(!!user); // Update based on auth state
+    });
+  
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const categoriesRef = ref(dbRealtime, "categories");
@@ -39,7 +51,15 @@ const Category = () => {
   }, []);
 
   const handleLogout = () => {
-    navigate("/login");
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        setIsAuthenticated(false); // Explicitly update state
+        navigate("/login"); // Redirect to login
+      })
+      .catch((error) => {
+        console.error("Logout Error:", error);
+      });
   };
 
   const toggleMenu = (e) => {

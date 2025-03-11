@@ -21,6 +21,8 @@ import { BsStarFill } from "react-icons/bs"; // Added for marking main image
 import imgbbg from "../assets/imgbg.jpeg";
 import defaultProductImage from "../assets/product-default.png"; // Added default product image
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { getAuth, signOut,onAuthStateChanged  } from "firebase/auth";
+
 
 const ProductPage = () => {
   const navigate = useNavigate();
@@ -60,6 +62,17 @@ const ProductPage = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const [ isAuthenticated, setIsAuthenticated ] = useState(true)
+  
+    useEffect(() => {
+      const auth = getAuth();
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        setIsAuthenticated(!!user); // Update based on auth state
+      });
+    
+      return () => unsubscribe();
+    }, []);
 
   // Load and convert default image to base64 on component mount
   useEffect(() => {
@@ -111,7 +124,17 @@ const ProductPage = () => {
     });
   }, []);
 
-  const handleLogout = () => navigate("/login");
+    const handleLogout = () => {
+      const auth = getAuth();
+      signOut(auth)
+        .then(() => {
+          setIsAuthenticated(false); // Explicitly update state
+          navigate("/login"); // Redirect to login
+        })
+        .catch((error) => {
+          console.error("Logout Error:", error);
+        });
+    };
 
   const handleChange = (e) => {
     setProductData({ ...productData, [e.target.name]: e.target.value });
