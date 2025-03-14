@@ -181,7 +181,7 @@ const Home = () => {
           </div>
 
             {/* Category */}
-            <div className="grid grid-cols-3 px-2 gap-2 mb-5">
+            <div className="grid grid-cols-2 md:grid-cols-3 px-2 gap-2 mb-5">
               {categories.map((category) => (
                 <div
                   key={category.id}
