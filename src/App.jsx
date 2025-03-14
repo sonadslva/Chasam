@@ -73,7 +73,7 @@ const MainLayout = () => {
     <div className="flex min-h-screen bg-white">
       {showNavbar && (
         <>
-          <div className="md:hidden fixed top-0 left-0 w-full z-50 bg-white">
+          <div className="md:hidden fixed bottom-0 left-0 w-full z-50 bg-white">
             <Navbar />
           </div>
           
@@ -84,7 +84,7 @@ const MainLayout = () => {
       )}
 
       {/* Main Content */}
-      <div className={`flex-1 w-full ${showNavbar ? 'md:ml-[15%] pt-16 md:pt-0' : ''} overflow-x-hidden`}>
+      <div className={`flex-1 w-full ${showNavbar ? 'md:ml-[15%] md:pt-0' : ''} overflow-x-hidden`}>
         {showIntro ? (
           <Introduction />
         ) : (

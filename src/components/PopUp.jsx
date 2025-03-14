@@ -142,7 +142,7 @@ useEffect(() => {
             opacity: 1,
             transition: { duration: 1.2, ease: "backInOut" },
           }}
-          className="fixed w-[95%] md:w-[50%] md:flex md:flex-col md:justify-center mx-auto top-[30%] md:top-[50%] md:-translate-y-1/2 bottom-0 md:bottom-auto rounded-t-3xl z-[998] popUpBg bg-[#fff] backdrop-blur-sm overflow-y-auto md:overflow-y-visible scrollBar max-h-[90vh] md:max-h-[90vh]"
+          className="fixed w-[95%] md:w-[50%] md:flex md:flex-col md:justify-center mx-auto top-[2%] md:top-[50%] md:-translate-y-1/2 bottom-0 md:bottom-auto rounded-t-3xl z-[998] popUpBg bg-[#fff] backdrop-blur-sm overflow-y-auto md:overflow-y-visible scrollBar max-h-[90vh] md:max-h-[90vh]"
           >
           <div className="w-full h-full overflow-y-auto scrollBar ">
             <div className="flex pt-4 pl-4 mb-5">

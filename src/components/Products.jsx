@@ -167,7 +167,7 @@ const Products = () => {
 
   
   return (
-    <div className="w-full min-h-screen bg-white relative">
+    <div className="w-full min-h-screen bg-white relative pt-4">
       <div className="absolute top-0 bottom-0 left-0 right-0">
         <img
           src="https://img.freepik.com/free-vector/hand-drawn-olive-green-background_23-2149725222.jpg?t=st=1739964142~exp=1739967742~hmac=2bc705054c2a2430867275dad61e87e6b18ad0dda207c3f165ca54f906f8a593&w=1060"

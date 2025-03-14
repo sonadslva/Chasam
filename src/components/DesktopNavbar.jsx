@@ -14,7 +14,7 @@ const DesktopNavbar = () => {
   };
 
   return (
-    <div className='fixed top-0 bottom-0 left-0 w-[15%] z-50'>
+    <div className='hidden md:block fixed top-0 bottom-0 left-0 w-[15%] z-50'>
       <div className='h-screen'>
         <nav className='w-full bg-gradient-to-b from-[#8d8d8d] via-[#ffffff] to-[#3E7B27] backdrop-blur-3xl h-full'>
           <div className='w-full h-full bg-black text-white md:bg-white md:text-black flex flex-col'>
