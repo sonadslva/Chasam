@@ -51,7 +51,7 @@ const Contact = () => {
 
   return (
     <div className="h-full ContactBg relative bgGradient mix-blend-multiply md:max-w-[1400px] md:mx-auto w-full md:ml-[2px] overflow-y-hidden">
-      <div className="flex flex-col items-center justify-center py-5 px-4 w-full max-w-[1400px] mx-auto">
+      <div className="flex flex-col items-center justify-center py-5  w-full max-w-[1400px] mx-auto">
         <a href="/">
           <div className="absolute top-4 left-4 text-xl bg-[#fff] p-1 rounded-full">
             <FaChevronCircleLeft />
