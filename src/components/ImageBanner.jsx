@@ -161,7 +161,7 @@ const ImageBanner = () => {
                 {Object.keys(banners).length === 0 ? (
                   <p className="text-black">No banners uploaded yet.</p>
                 ) : (
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
                     {Object.entries(banners).map(([bannerId, banner]) => (
                       <div
                         key={bannerId}
