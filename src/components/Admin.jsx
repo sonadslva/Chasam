@@ -3,137 +3,91 @@ import { IoMdLogOut } from "react-icons/io";
 import { FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/chasam.png";
-import Adminbg from "../assets/adminbg.jpeg";
-import { getAuth, signOut,onAuthStateChanged  } from "firebase/auth";
+import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import AdminNav from "./AdminNav";
+import Adminbg from "../assets/adminbg.jpeg"; // Import background image
 
-const Admin = ({}) => {
+const Admin = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [ isAuthenticated, setIsAuthenticated ] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsAuthenticated(!!user); // Update based on auth state
+      setIsAuthenticated(!!user);
     });
-  
+
     return () => unsubscribe();
   }, []);
-  
 
-  // Toggle the menu
-  const toggleMenu = (e) => {
-    e.stopPropagation(); // Prevent click from immediately closing menu
-    setMenuOpen((prev) => !prev);
-  };
-
-  // Close the menu when clicking outside
-  const closeMenu = (e) => {
-    if (!e.target.closest(".sidebar") && !e.target.closest(".menu-btn")) {
-      setMenuOpen(false);
-    }
-  };
-  
   const handleLogout = () => {
     const auth = getAuth();
     signOut(auth)
       .then(() => {
-        setIsAuthenticated(false); // Explicitly update state
-        navigate("/login"); // Redirect to login
+        setIsAuthenticated(false);
+        navigate("/login");
       })
       .catch((error) => {
         console.error("Logout Error:", error);
       });
   };
-  
-  const [isScrolled, setIsScrolled] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-  
   return (
-    <div className="flex h-screen relative overflow-hidden" onClick={closeMenu}>
-      {/* Sidebar Navigation */}
+    <div
+      className="flex h-screen overflow-hidden bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: `url(${Adminbg})` }} // Set background
+    >
+      {/* Sidebar - Hidden in Mobile by Default */}
       <div
-        className={`sidebar fixed top-0 left-0 h-full z-[998] bg-[#00000007] backdrop-blur-sm shadow-lg w-14 transform transition-transform ${
-          menuOpen ? "translate-x-0" : "-translate-x-full"
+        className={`sidebar fixed top-0 left-0 h-full z-[999] bg-[#00000007] backdrop-blur-sm shadow-lg md:w-64 w-14 transform transition-transform ${
+          menuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
         <AdminNav closeMenu={() => setMenuOpen(false)} />
       </div>
 
-      {/* Background Image - Now as a fixed background that covers the entire page */}
-      <div className="fixed inset-0 w-full h-full -z-20">
-        <img
-          src={Adminbg}
-          alt="Background"
-          className="h-full w-full object-cover opacity-90"
-        />
-      </div>
-
-      {/* Main Content Container */}
-      <div className="flex flex-col w-full pb-10">
+      {/* Main Content */}
+      <div className="flex flex-col w-full ml-0 md:ml-64">
         {/* Top Navigation */}
-        <div
-          className={`flex items-center py-4 px-0 z-[999] sticky top-0 w-full transition-colors duration-300 ${
-            isScrolled ? "bg-white shadow-md rounded-b-3xl" : "bg-transparent"
-          }`}
-        >
+        <div className="flex items-center py-4 px-0 z-[999] sticky top-0 w-full md:bg-white md:shadow-md rounded-b-3xl">
+          {/* Toggle Sidebar on Mobile */}
           <button
-            className="menu-btn text-gray-700 text-2xl p-4 focus:outline-none ml-0"
-            onClick={toggleMenu}
+            className="text-white text-2xl p-4 focus:outline-none ml-0 md:hidden"
+            onClick={() => setMenuOpen(!menuOpen)}
           >
-            <FaEllipsisV
-              className={`text-3xl ${isScrolled ? "text-black" : "text-white"}`}
-            />
+            <FaEllipsisV className="text-3xl" />
           </button>
+
+          {/* Logo */}
           <div className="ml-[-5px] flex justify-center">
             <img src={logo} alt="Logo" className="w-14" />
           </div>
+
+          {/* Logout Button */}
           <div
-            className="flex justify-center ml-auto pr-3 text-2xl"
+            className="flex justify-center ml-auto pr-3 text-2xl cursor-pointer"
             onClick={handleLogout}
           >
-            <IoMdLogOut
-              className={`text-3xl ${isScrolled ? "text-black" : "text-white"}`}
-            />
+            <IoMdLogOut className="text-3xl md:text-black text-white" />
           </div>
         </div>
 
-        {/* Business Description - Now in a scrollable container */}
+        {/* Content */}
         <div className="flex flex-col items-center justify-center w-full mt-5 px-4">
           <div className="max-w-4xl text-center bg-black/20 backdrop-blur-sm p-5 rounded-lg">
             <h1 className="text-3xl md:text-4xl font-bold text-white">
-             🌿 Nature’s 🌿<span className="block">Wellness Hub!</span> 
-              
+              🌿 Nature’s <span className="block">Wellness Hub!</span>
             </h1>
             <p className="mt-4 text-lg md:text-xl text-white font-medium">
               Chasam Ayurvedic & Spice Garden Shop offers pure Ayurvedic
               products, exotic spices, and natural remedies sourced from nature.
-              We provide herbal supplements, organic spices, essential oils, and
-              handcrafted wellness products to support a healthy lifestyle.
             </p>
             <p className="mt-2 text-lg md:text-xl text-white font-medium">
               Discover healing herbs, aromatic spices, and Ayurvedic beauty
               essentials – all sustainably sourced for your well-being. Step
               into Chasam and embrace the power of nature! 🌱✨
             </p>
-          </div>
-
-          {/* Additional content can be added here */}
-          <div className="mt-10 max-w-4xl w-full">
-            {/* Your additional content would go here */}
           </div>
         </div>
       </div>

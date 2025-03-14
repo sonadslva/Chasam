@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ref, push, onValue, update, remove } from "firebase/database";
-import { dbRealtime } from "../firebaseConfig"; // Firebase Realtime Database
+import { dbRealtime } from "../firebaseConfig";
 import logo from "../assets/chasam.png";
 import { IoMdLogOut } from "react-icons/io";
 import AdminNav from "./AdminNav";
@@ -10,8 +10,7 @@ import imgb1 from "../assets/imgb1.jpeg";
 import imgb2 from "../assets/imgb2.jpeg";
 import { BiSolidFileImage } from "react-icons/bi";
 import imgbgb from "../assets/imgbg.jpeg";
-import { getAuth, signOut,onAuthStateChanged  } from "firebase/auth";
-
+import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 
 const ImageBanner = () => {
   const navigate = useNavigate();
@@ -19,171 +18,82 @@ const ImageBanner = () => {
   const [showForm, setShowForm] = useState(false);
   const [showBanners, setShowBanners] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [banners, setBanners] = useState({}); // Store banners with keys
+  const [banners, setBanners] = useState({});
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  // Fetch banners from Firebase
   useEffect(() => {
     const bannersRef = ref(dbRealtime, "banners");
     onValue(bannersRef, (snapshot) => {
       const data = snapshot.val();
-      if (data) {
-        setBanners(data);
-      } else {
-        setBanners({});
-      }
+      setBanners(data || {});
     });
   }, []);
-const [ isAuthenticated, setIsAuthenticated ] = useState(true)
-
-  useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsAuthenticated(!!user); // Update based on auth state
-    });
-  
-    return () => unsubscribe();
-  }, []);
-  const handleLogout = () => {
-    const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        setIsAuthenticated(false); // Explicitly update state
-        navigate("/login"); // Redirect to login
-      })
-      .catch((error) => {
-        console.error("Logout Error:", error);
-      });
-  };
-
-  const toggleMenu = (e) => {
-    e.stopPropagation();
-    setMenuOpen((prev) => !prev);
-  };
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        setSelectedFile(reader.result); // Base64 image data
-      };
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (!selectedFile) {
-      alert("Please select an image!");
-      return;
-    }
-
-    const newBanner = {
-      image: selectedFile,
-      date: new Date().toLocaleString(),
-      status: "active",
-    };
-
-    try {
-      const bannersRef = ref(dbRealtime, "banners");
-      await push(bannersRef, newBanner);
-      alert("Banner added successfully!");
-      setShowForm(false);
-      setSelectedFile(null);
-    } catch (error) {
-      console.error("Error uploading banner:", error);
-      alert("Failed to upload banner.");
-    }
-  };
-
-  const handleStatusToggle = async (bannerId, currentStatus) => {
-    try {
-      await update(ref(dbRealtime, `banners/${bannerId}`), {
-        status: currentStatus === "active" ? "inactive" : "active",
-      });
-    } catch (error) {
-      console.error("Error updating banner status:", error);
-      alert("Failed to update banner status.");
-    }
-  };
-
-  const handleDeleteBanner = async (bannerId) => {
-    if (window.confirm("Are you sure you want to delete this banner?")) {
-      try {
-        await remove(ref(dbRealtime, `banners/${bannerId}`));
-        alert("Banner deleted successfully!");
-      } catch (error) {
-        console.error("Error deleting banner:", error);
-        alert("Failed to delete banner.");
-      }
-    }
-  };
-  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 50);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleLogout = () => {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => navigate("/login"))
+      .catch((error) => console.error("Logout Error:", error));
+  };
+
   return (
-    <div className="min-h-screen w-full relative">
+    <div
+      className="flex h-screen  bg-cover bg-center bg-no-repeat object-contain"
+      style={{ backgroundImage: `url(${imgbgb})` }}
+    >
+      {/* Sidebar */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-60"
-        style={{ backgroundImage: `url(${imgbgb})` }}
-      />
-      <div className="relative z-10">
-        <div className="flex h-auto">
-          <div
-            className={`fixed top-0 z-[998] left-0 h-full bg-[#00000007] backdrop-blur-sm shadow-lg w-14 transition-transform ${
-              menuOpen ? "translate-x-0" : "-translate-x-full"
-            }`}
+        className={`fixed top-0 left-0 h-full z-[999] bg-[#00000007] backdrop-blur-sm shadow-lg md:w-64 w-14 transform transition-transform ${
+          menuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        }`}
+      >
+        <AdminNav closeMenu={() => setMenuOpen(false)} />
+      </div>
+
+      {/* Main Content */}
+      <div className="flex flex-1 flex-col ml-0 md:ml-64 transition-all">
+        {/* Top Navbar */}
+        <div className="flex items-center py-4 px-0 z-[999] sticky top-0 w-full md:bg-white md:shadow-md rounded-b-3xl">
+          {/* Toggle Sidebar on Mobile */}
+          <button
+            className="text-white text-2xl p-4 focus:outline-none ml-0 md:hidden"
+            onClick={() => setMenuOpen(!menuOpen)}
           >
-            <AdminNav closeMenu={() => setMenuOpen(false)} />
+            <FaEllipsisV className="text-3xl" />
+          </button>
+
+          {/* Logo */}
+          <div className="ml-[-5px] flex justify-center">
+            <img src={logo} alt="Logo" className="w-14" />
           </div>
 
-          <div className="flex flex-1 items-center w-full">
-            {/* Top Navigation */}
-            <div
-              className={`flex items-center py-4 px-0 z-[999] fixed top-0 w-full transition-colors duration-300 ${
-                isScrolled
-                  ? "bg-white shadow-md rounded-b-3xl"
-                  : "bg-transparent"
-              }`}
-            >
-              <button
-                className="menu-btn text-gray-700 text-2xl p-4 focus:outline-none ml-0"
-                onClick={toggleMenu}
-              >
-                <FaEllipsisV
-                  className={`text-3xl ${
-                    isScrolled ? "text-black" : "text-white"
-                  }`}
-                />
-              </button>
-              <div className="ml-[-5px] flex justify-center">
-                <img src={logo} alt="Logo" className="w-14" />
-              </div>
-              <div
-                className="flex justify-center ml-auto pr-3 text-2xl"
-                onClick={handleLogout}
-              >
-                <IoMdLogOut
-                  className={`text-3xl ${
-                    isScrolled ? "text-black" : "text-white"
-                  }`}
-                />
-              </div>
-            </div>
+          {/* Logout Button */}
+          <div
+            className="flex justify-center ml-auto pr-3 text-2xl cursor-pointer"
+            onClick={handleLogout}
+          >
+            <IoMdLogOut className="text-3xl md:text-black text-white" />
           </div>
+        </div>
 
-          <div className="w-full flex flex-col h-auto px-2 mt-[80px]">
+        {/* Page Content */}
+        <div className="relative flex-1 pt-[80px] p-4">
+          {/* Background Image */}
+          {/* <div
+            className="absolute inset-0 bg-cover bg-center opacity-60"
+            style={{ backgroundImage: `url(${imgbgb})` }}
+          /> */}
+
+          {/* Content */}
+          <div className="relative z-10">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center justify-center pt-5">
               MANAGE BANNERS
             </h2>
@@ -217,99 +127,69 @@ const [ isAuthenticated, setIsAuthenticated ] = useState(true)
                 </button>
               </div>
             </div>
-            {/* Add Banner Form (Appears on Click) */}
+
+            {/* Banner Upload Form */}
             {showForm && (
-              <div className="w-full max-w-md bg-[#CBBA9E] p-6 mt-6 rounded-lg shadow-lg mb-3">
-                <h3 className="text-2xl font-bold text-white mb-4 text-center">
+              <div className="w-full max-w-md mx-auto bg-[#CBBA9E] p-6 mt-6 rounded-lg shadow-lg">
+                <h3 className="text-xl md:text-2xl font-bold text-white mb-4 text-center">
                   ADD NEW BANNER
                 </h3>
-                <div className="relative flex items-center">
-                  <div className="absolute right-2">
-                    <BiSolidFileImage />
-                  </div>
-                  <input
-                    type="file"
-                    className="w-full border border-[#51372A] bg-white p-2 rounded-lg focus:outline-none"
-                    onChange={handleFileChange}
-                  />
-                </div>
-
-                {selectedFile && (
-                  <div className="mt-4">
-                    <p className="text-white text-sm ">Preview:</p>
-                    <img
-                      src={selectedFile}
-                      alt="Preview"
-                      className="w-full h-40 object-cover rounded-lg border border-gray-300 mt-2"
-                    />
-                  </div>
-                )}
+                <input
+                  type="file"
+                  className="w-full border border-[#51372A] bg-white p-2 rounded-lg focus:outline-none"
+                />
                 <div className="mt-4 flex justify-center gap-2 w-full">
                   <button
                     className="px-4 py-2 bg-[#8B6254] text-white rounded-lg w-full"
-                    onClick={() => {
-                      setShowForm(false);
-                      setSelectedFile(null); // Reset preview
-                    }}
+                    onClick={() => setShowForm(false)}
                   >
                     Cancel
                   </button>
-                  <button
-                    className="px-4 py-2 bg-[#435933] hover:bg-[#304421] text-white rounded-lg w-full"
-                    onClick={handleSubmit}
-                  >
+                  <button className="px-4 py-2 bg-[#435933] hover:bg-[#304421] text-white rounded-lg w-full">
                     Submit
                   </button>
                 </div>
               </div>
             )}
 
+            {/* Display Banners */}
             {showBanners && (
-              <div className="mt-8 w-full relative">
-                <div className="absolute inset-0 bg-[#ffffff79] bg-opacity-10 backdrop-blur-xl rounded-lg"></div>
-                <div className="relative z-10 p-4 rounded-lg shadow-lg">
-                  <h3 className="text-xl font-bold text-black mb-4 text-center">
-                    UPLOADED BANNERS
-                  </h3>
-                  {Object.keys(banners).length === 0 ? (
-                    <p className="text-black">No banners uploaded yet.</p>
-                  ) : (
-                    <div className="grid grid-cols-1 gap-4">
-                      {Object.entries(banners).map(([bannerId, banner]) => (
-                        <div
-                          key={bannerId}
-                          className="shadow-lg bg-[#ab8c59] rounded-lg overflow-hidden"
-                        >
-                          <img
-                            src={banner.image}
-                            alt="Banner"
-                            className="w-full h-40 object-cover"
-                          />
-                          <div className="p-3 flex justify-between items-center">
-                            <button
-                              onClick={() =>
-                                handleStatusToggle(bannerId, banner.status)
-                              }
-                              className={`px-3 py-1 rounded ${
-                                banner.status === "active"
-                                  ? "bg-green-500"
-                                  : "bg-red-500"
-                              } text-white`}
-                            >
-                              {banner.status}
-                            </button>
-                            <button
-                              onClick={() => handleDeleteBanner(bannerId)}
-                              className="px-3 py-1 bg-red-600 text-white rounded"
-                            >
-                              Delete
-                            </button>
-                          </div>
+              <div className="mt-8 w-full relative bg-white p-4 rounded-lg shadow-lg">
+                <h3 className="text-xl font-bold text-black mb-4 text-center">
+                  UPLOADED BANNERS
+                </h3>
+                {Object.keys(banners).length === 0 ? (
+                  <p className="text-black">No banners uploaded yet.</p>
+                ) : (
+                  <div className="grid grid-cols-3 gap-4">
+                    {Object.entries(banners).map(([bannerId, banner]) => (
+                      <div
+                        key={bannerId}
+                        className="shadow-lg bg-[#ab8c59] rounded-lg overflow-hidden"
+                      >
+                        <img
+                          src={banner.image}
+                          alt="Banner"
+                          className="w-full h-40 object-cover"
+                        />
+                        <div className="p-3 flex justify-between items-center">
+                          <button
+                            className={`px-3 py-1 rounded ${
+                              banner.status === "active"
+                                ? "bg-green-500"
+                                : "bg-red-500"
+                            } text-white`}
+                          >
+                            {banner.status}
+                          </button>
+                          <button className="px-3 py-1 bg-red-600 text-white rounded">
+                            Delete
+                          </button>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>

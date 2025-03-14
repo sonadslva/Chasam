@@ -460,394 +460,404 @@ const ProductPage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full relative">
+    <div
+      className="flex h-screen  bg-cover bg-center bg-no-repeat object-contain"
+      style={{ backgroundImage: `url(${imgbbg})` }}
+    >
+      {/* Sidebar */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-60"
-        style={{ backgroundImage: `url(${imgbbg})` }}
-      />
-      <div className="relative z-10">
-        <div className="flex h-auto" onClick={closeMenu}>
-          <div
-            className={`sidebar fixed top-0 left-0 h-full z-[998] bg-[#00000007] backdrop-blur-sm shadow-lg w-14 transform transition-transform ${
-              menuOpen ? "translate-x-0" : "-translate-x-full"
-            }`}
+        className={`fixed top-0 left-0 h-full z-[999] bg-[#00000007] backdrop-blur-sm shadow-lg md:w-64 w-14 transform transition-transform ${
+          menuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        }`}
+      >
+        <AdminNav closeMenu={() => setMenuOpen(false)} />
+      </div>
+
+      <div className="flex flex-1 flex-col ml-0 md:ml-64 transition-all">
+        {/* Top Navigation */}
+        <div className="flex items-center py-4 px-0 z-[999] sticky top-0 w-full md:bg-white md:shadow-md rounded-b-3xl">
+          {/* Toggle Sidebar on Mobile */}
+          <button
+            className="text-white text-2xl p-4 focus:outline-none ml-0 md:hidden"
+            onClick={() => setMenuOpen(!menuOpen)}
           >
-            <AdminNav closeMenu={() => setMenuOpen(false)} />
+            <FaEllipsisV className="text-3xl" />
+          </button>
+
+          {/* Logo */}
+          <div className="ml-[-5px] flex justify-center">
+            <img src={logo} alt="Logo" className="w-14" />
           </div>
 
-          <div className="flex flex-1 items-center w-full">
-            {/* Top Navigation */}
-            <div
-              className={`flex items-center py-4 px-0 z-[999] fixed top-0 w-full transition-colors duration-300 ${
-                isScrolled ? "bg-white shadow-md rounded-b-3xl" : "bg-transparent"
-              }`}
-            >
-              <button
-                className="menu-btn text-gray-700 text-2xl p-4 focus:outline-none ml-0"
-                onClick={toggleMenu}
-              >
-                <FaEllipsisV
-                  className={`text-3xl ${
-                    isScrolled ? "text-black" : "text-white"
-                  }`}
-                />
-              </button>
-              <div className="ml-[-5px] flex justify-center">
-                <img src={logo} alt="Logo" className="w-14" />
-              </div>
-              <div
-                className="flex justify-center ml-auto pr-3 text-2xl"
-                onClick={handleLogout}
-              >
-                <IoMdLogOut
-                  className={`text-3xl ${
-                    isScrolled ? "text-black" : "text-white"
-                  }`}
-                />
-              </div>
-            </div>
+          {/* Logout Button */}
+          <div
+            className="flex justify-center ml-auto pr-3 text-2xl cursor-pointer"
+            onClick={handleLogout}
+          >
+            <IoMdLogOut className="text-3xl md:text-black text-white" />
           </div>
         </div>
 
-        <div className="w-full flex flex-col h-auto px-2 mt-[80px]">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center justify-center pt-5">
-            MANAGE PRODUCTS
-          </h2>
+        <div className="relative flex-1 pt-[80px] p-4">
+          <div className="relative z-10">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center justify-center pt-5">
+              MANAGE CATEGORY
+            </h2>
 
-          <div className="flex gap-2 w-full ">
-            <div
-              className="relative w-[50%] h-[180px] flex justify-center items-center rounded-3xl bg-cover bg-center cursor-pointer"
-              style={{ backgroundImage: `url(${pbg1})` }}
-              onClick={() => {
-                setShowForm(!showForm);
-                setShowProducts(false);
-                if (!showForm) {
-                  resetForm();
-                  setEditMode(false);
-                  setSelectedProduct(null);
-                }
-              }}
-            >
-              <div className="bg-[#000] absolute inset-0 w-full h-full -z-0 mix-blend-multiply opacity-30 rounded-3xl"></div>
-              <button className="text-white relative px-6 py-3 rounded-lg text-2xl font-black">
-                ADD PRODUCT
-              </button>
-            </div>
-
-            <div
-              className="relative w-[50%] h-[180px] flex justify-center items-center rounded-3xl bg-cover bg-center cursor-pointer"
-              style={{ backgroundImage: `url(${pbg2})` }}
-              onClick={() => {
-                setShowProducts(!showProducts);
-                setShowForm(false);
-                setSelectedImages([]);
-                resetForm();
-              }}
-            >
-              <div className="bg-[#000] absolute inset-0 w-full h-full -z-0 mix-blend-multiply opacity-30 rounded-3xl"></div>
-              <button className="text-white relative px-6 py-3 rounded-lg text-2xl font-black">
-                VIEW PRODUCTS
-              </button>
-            </div>
-          </div>
-
-          {showForm && (
-            <div className="mb-8">
-              <h3 className="text-xl font-bold text-black mb-4 text-center">
-                {editMode ? "EDIT PRODUCT" : "ADD NEW PRODUCT"}
-              </h3>
-
-              <div>
-                <label className="w-full border cursor-pointer p-2 rounded-lg mb-2 flex justify-center items-center gap-2 bg-white">
-                  <BiSolidFileImage size={20} />
-                  <span>
-                    {fileNames.length ? fileNames.join(", ") : "Product Images (Optional)"}
-                  </span>
-                  <input
-                    type="file"
-                    multiple
-                    className="hidden"
-                    onChange={handleImageUpload}
-                    accept="image/*"
-                  />
-                </label>
-              </div>
-
-              {selectedImages.length > 0 && (
-                <div>
-                  <p className="text-sm text-center mb-2">
-                    Click on a star icon to set as main product image
-                  </p>
-                  <div className="grid grid-cols-3 gap-2 mb-4">
-                    {selectedImages.map((preview, index) => (
-                      <div key={index} className="relative">
-                        <img
-                          src={preview}
-                          alt={`Preview ${index}`}
-                          className="h-16 w-16 object-cover rounded"
-                        />
-                        <button
-                          className="absolute top-1 right-1 bg-white rounded-full p-1"
-                          onClick={() => setAsMainImage(index)}
-                        >
-                          <BsStarFill
-                            size={12}
-                            className={
-                              productData.mainImageIndex === index
-                                ? "text-yellow-500"
-                                : "text-gray-300"
-                            }
-                          />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <select
-                name="category"
-                value={productData.category}
-                onChange={handleChange}
-                className="w-full border p-2 rounded-lg mb-2 bg-white"
-                required
-              >
-                <option value="" disabled>
-                  Select Category *
-                </option>
-                {categories.map((category, index) => (
-                  <option key={index} value={category.name}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-
-              <input
-                type="text"
-                name="name"
-                placeholder="Product Name *"
-                value={productData.name}
-                onChange={handleChange}
-                className="w-full border p-2 rounded-lg mb-2 bg-white"
-                required
-              />
-
-              <input
-                type="text"
-                name="price"
-                placeholder="Price (Optional)"
-                value={productData.price}
-                onChange={handleChange}
-                className="w-full border p-2 rounded-lg mb-2 bg-white"
-              />
-
-              <textarea
-                name="description"
-                placeholder="Description (Optional)"
-                value={productData.description}
-                onChange={handleChange}
-                className="w-full border p-2 rounded-lg mb-2 bg-white"
-              />
-
-              <textarea
-                name="usage"
-                placeholder="Product Usage Instructions (Optional)"
-                value={productData.usage}
-                onChange={handleChange}
-                className="w-full border p-2 rounded-lg mb-2 bg-white"
-              />
-
-              <input
-                type="text"
-                name="purpose"
-                placeholder="Purpose (Optional)"
-                value={productData.purpose}
-                onChange={handleChange}
-                className="w-full border p-2 rounded-lg mb-2 bg-white"
-              />
-
-              <input
-                type="text"
-                name="netQty"
-                placeholder="Net Qty (Optional)"
-                value={productData.netQty}
-                onChange={handleChange}
-                className="w-full border p-2 rounded-lg mb-2 bg-white"
-              />
-
-              <div className="mt-4 flex justify-center gap-2 w-full">
-                <button
-                  className="px-4 py-2 bg-[#8B6254] text-white rounded-lg w-full"
-                  onClick={() => {
-                    setShowForm(false);
+            <div className="flex gap-2 w-full">
+              <div
+                className="relative w-[50%] h-[180px] flex justify-center items-center rounded-3xl bg-cover bg-center cursor-pointer "
+                style={{ backgroundImage: `url(${pbg1})` }}
+                onClick={() => {
+                  setShowForm(!showForm);
+                  setShowProducts(false);
+                  if (!showForm) {
+                    resetForm();
                     setEditMode(false);
                     setSelectedProduct(null);
-                    resetForm();
-                  }}
-                >
-                  Cancel
+                  }
+                }}
+              >
+                <div className="bg-[#000] absolute inset-0 w-full h-full -z-0 mix-blend-multiply opacity-30 rounded-3xl"></div>
+                <button className="text-white relative px-6 py-3 rounded-lg text-2xl font-black">
+                  ADD PRODUCT
                 </button>
-                <button
-                  className="px-4 py-2 bg-[#435933] hover:bg-[#304421] text-white rounded-lg w-full"
-                  onClick={handleSubmit}
-                >
-                  {editMode ? "Update" : "Submit"}
+              </div>
+
+              <div
+                className="relative w-[50%] h-[180px] flex justify-center items-center rounded-3xl bg-cover bg-center cursor-pointer"
+                style={{ backgroundImage: `url(${pbg2})` }}
+                onClick={() => {
+                  setShowProducts(!showProducts);
+                  setShowForm(false);
+                  setSelectedImages([]);
+                  resetForm();
+                }}
+              >
+                <div className="bg-[#000] absolute inset-0 w-full h-full -z-0 mix-blend-multiply opacity-30 rounded-3xl"></div>
+                <button className="text-white relative px-6 py-3 rounded-lg text-2xl font-black">
+                  VIEW PRODUCTS
                 </button>
               </div>
             </div>
-          )}
 
-          {showProducts && (
-            <div className="mt-8 w-full backdrop-blur-xl p-4 rounded-lg shadow-lg">
-              <h3 className="text-xl font-bold text-black mb-4 text-center">
-                PRODUCT LIST
-              </h3>
-              
-              {/* Scrollable container */}
-              <div className="overflow-auto max-h-[500px]">
-                <table className="w-full min-w-[1000px] bg-white border rounded-lg">
-                  <thead className="sticky top-0 bg-gray-200 z-10 shadow-md">
-                    <tr>
-                      <th className="p-2">Images</th>
-                      <th className="p-2">Name</th>
-                      <th className="p-2">Category</th>
-                      <th className="p-2">Price</th>
-                      <th className="p-2">Description</th>
-                      <th className="p-2">Purpose</th>
-                      <th className="p-2">Usage</th>
-                      <th className="p-2">Net Qty</th>
-                      <th className="p-2">Status</th>
-                      <th className="p-2">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {products.map((product) => (
-                      <tr key={product.id} className="border-b border-r text-center">
-                        <td className="p-2">
-                          {product.images && product.images.length > 0 ? (
-                            <div className="w-12 h-12 cursor-pointer">
-                              <img
-                                src={product.images[0]}
-                                alt="Thumbnail"
-                                className="w-full h-full object-cover rounded"
-                                onClick={() => openImageModal(product.images, 0)}
-                              />
-                            </div>
-                          ) : (
-                            <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
-                              <BiSolidFileImage size={20} className="text-gray-400" />
-                            </div>
-                          )}
-                        </td>
-                        <td className="p-2">{product.name}</td>
-                        <td className="p-2">{product.category}</td>
-                        <td className="p-2">{product.price || "-"}</td>
-                        <td className="p-2 max-w-[200px]">
-                          <div className="truncate">{product.description || "-"}</div>
-                        </td>
-                        <td className="p-2">{product.purpose || "-"}</td>
-                        <td className="p-2">{product.usage || "-"}</td>
-                        <td className="p-2">{product.netQty || "-"}</td>
-                        <td className="p-2">
+            {showForm && (
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-black mb-4 text-center">
+                  {editMode ? "EDIT PRODUCT" : "ADD NEW PRODUCT"}
+                </h3>
+
+                <div>
+                  <label className="w-full border cursor-pointer p-2 rounded-lg mb-2 flex justify-center items-center gap-2 bg-white">
+                    <BiSolidFileImage size={20} />
+                    <span>
+                      {fileNames.length
+                        ? fileNames.join(", ")
+                        : "Product Images (Optional)"}
+                    </span>
+                    <input
+                      type="file"
+                      multiple
+                      className="hidden"
+                      onChange={handleImageUpload}
+                      accept="image/*"
+                    />
+                  </label>
+                </div>
+
+                {selectedImages.length > 0 && (
+                  <div>
+                    <p className="text-sm text-center mb-2">
+                      Click on a star icon to set as main product image
+                    </p>
+                    <div className="grid grid-cols-3 gap-2 mb-4">
+                      {selectedImages.map((preview, index) => (
+                        <div key={index} className="relative">
+                          <img
+                            src={preview}
+                            alt={`Preview ${index}`}
+                            className="h-16 w-16 object-cover rounded"
+                          />
                           <button
-                            className={`px-3 py-1 rounded-full text-sm ${
-                              product.status === "active"
-                                ? "bg-green-500 text-white"
-                                : "bg-red-500 text-white"
-                            }`}
-                            onClick={() => {
-                              const newStatus =
-                                product.status === "active" ? "inactive" : "active";
-                              const productRef = ref(dbRealtime, `products/${product.id}`);
-                              update(productRef, { status: newStatus });
-                            }}
+                            className="absolute top-1 right-1 bg-white rounded-full p-1"
+                            onClick={() => setAsMainImage(index)}
                           >
-                            {product.status === "active" ? "Active" : "Inactive"}
+                            <BsStarFill
+                              size={12}
+                              className={
+                                productData.mainImageIndex === index
+                                  ? "text-yellow-500"
+                                  : "text-gray-300"
+                              }
+                            />
                           </button>
-                        </td>
-                        <td className="p-2">
-                          <div className="flex justify-center gap-2">
-                            <button
-                              className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-sm"
-                              onClick={() => handleEdit(product)}
-                            >
-                              Edit
-                            </button>
-                            <button
-                              className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm"
-                              onClick={() => handleDelete(product.id)}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </td>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <select
+                  name="category"
+                  value={productData.category}
+                  onChange={handleChange}
+                  className="w-full border p-2 rounded-lg mb-2 bg-white"
+                  required
+                >
+                  <option value="" disabled>
+                    Select Category *
+                  </option>
+                  {categories.map((category, index) => (
+                    <option key={index} value={category.name}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Product Name *"
+                  value={productData.name}
+                  onChange={handleChange}
+                  className="w-full border p-2 rounded-lg mb-2 bg-white"
+                  required
+                />
+
+                <input
+                  type="text"
+                  name="price"
+                  placeholder="Price (Optional)"
+                  value={productData.price}
+                  onChange={handleChange}
+                  className="w-full border p-2 rounded-lg mb-2 bg-white"
+                />
+
+                <textarea
+                  name="description"
+                  placeholder="Description (Optional)"
+                  value={productData.description}
+                  onChange={handleChange}
+                  className="w-full border p-2 rounded-lg mb-2 bg-white"
+                />
+
+                <textarea
+                  name="usage"
+                  placeholder="Product Usage Instructions (Optional)"
+                  value={productData.usage}
+                  onChange={handleChange}
+                  className="w-full border p-2 rounded-lg mb-2 bg-white"
+                />
+
+                <input
+                  type="text"
+                  name="purpose"
+                  placeholder="Purpose (Optional)"
+                  value={productData.purpose}
+                  onChange={handleChange}
+                  className="w-full border p-2 rounded-lg mb-2 bg-white"
+                />
+
+                <input
+                  type="text"
+                  name="netQty"
+                  placeholder="Net Qty (Optional)"
+                  value={productData.netQty}
+                  onChange={handleChange}
+                  className="w-full border p-2 rounded-lg mb-2 bg-white"
+                />
+
+                <div className="mt-4 flex justify-center gap-2 w-full">
+                  <button
+                    className="px-4 py-2 bg-[#8B6254] text-white rounded-lg w-full"
+                    onClick={() => {
+                      setShowForm(false);
+                      setEditMode(false);
+                      setSelectedProduct(null);
+                      resetForm();
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="px-4 py-2 bg-[#435933] hover:bg-[#304421] text-white rounded-lg w-full"
+                    onClick={handleSubmit}
+                  >
+                    {editMode ? "Update" : "Submit"}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {showProducts && (
+              <div className="mt-8 w-full backdrop-blur-xl p-4 rounded-lg shadow-lg">
+                <h3 className="text-xl font-bold text-black mb-4 text-center">
+                  PRODUCT LIST
+                </h3>
+
+                {/* Scrollable container */}
+                <div className="overflow-auto max-h-[500px]">
+                  <table className="w-full min-w-[1000px] bg-white border rounded-lg">
+                    <thead className="sticky top-0 bg-gray-200 z-10 shadow-md">
+                      <tr>
+                        <th className="p-2">Images</th>
+                        <th className="p-2">Name</th>
+                        <th className="p-2">Category</th>
+                        <th className="p-2">Price</th>
+                        <th className="p-2">Description</th>
+                        <th className="p-2">Purpose</th>
+                        <th className="p-2">Usage</th>
+                        <th className="p-2">Net Qty</th>
+                        <th className="p-2">Status</th>
+                        <th className="p-2">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {products.map((product) => (
+                        <tr
+                          key={product.id}
+                          className="border-b border-r text-center"
+                        >
+                          <td className="p-2">
+                            {product.images && product.images.length > 0 ? (
+                              <div className="w-12 h-12 cursor-pointer">
+                                <img
+                                  src={product.images[0]}
+                                  alt="Thumbnail"
+                                  className="w-full h-full object-cover rounded"
+                                  onClick={() =>
+                                    openImageModal(product.images, 0)
+                                  }
+                                />
+                              </div>
+                            ) : (
+                              <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
+                                <BiSolidFileImage
+                                  size={20}
+                                  className="text-gray-400"
+                                />
+                              </div>
+                            )}
+                          </td>
+                          <td className="p-2">{product.name}</td>
+                          <td className="p-2">{product.category}</td>
+                          <td className="p-2">{product.price || "-"}</td>
+                          <td className="p-2 max-w-[200px]">
+                            <div className="truncate">
+                              {product.description || "-"}
+                            </div>
+                          </td>
+                          <td className="p-2">{product.purpose || "-"}</td>
+                          <td className="p-2">{product.usage || "-"}</td>
+                          <td className="p-2">{product.netQty || "-"}</td>
+                          <td className="p-2">
+                            <button
+                              className={`px-3 py-1 rounded-full text-sm ${
+                                product.status === "active"
+                                  ? "bg-green-500 text-white"
+                                  : "bg-red-500 text-white"
+                              }`}
+                              onClick={() => {
+                                const newStatus =
+                                  product.status === "active"
+                                    ? "inactive"
+                                    : "active";
+                                const productRef = ref(
+                                  dbRealtime,
+                                  `products/${product.id}`
+                                );
+                                update(productRef, { status: newStatus });
+                              }}
+                            >
+                              {product.status === "active"
+                                ? "Active"
+                                : "Inactive"}
+                            </button>
+                          </td>
+                          <td className="p-2">
+                            <div className="flex justify-center gap-2">
+                              <button
+                                className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-sm"
+                                onClick={() => handleEdit(product)}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm"
+                                onClick={() => handleDelete(product.id)}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Image Viewer Modal with Transparent Background */}
+          {isModalOpen && (
+            <div
+              className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm"
+              onClick={() => setIsModalOpen(false)}
+            >
+              <div
+                className="relative max-w-4xl w-full h-full flex items-center justify-center"
+                onClick={(e) => e.stopPropagation()}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+              >
+                {/* Close Button */}
+                <button
+                  className="absolute top-4 right-4 z-20 bg-gray-200 rounded-full p-1"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  <X size={24} />
+                </button>
+
+                {/* Navigation Buttons */}
+                <button
+                  className="absolute left-4 z-20 bg-gray-200 rounded-full p-2 opacity-80 hover:opacity-100"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    prevImage();
+                  }}
+                >
+                  <ChevronLeft size={24} />
+                </button>
+
+                {/* Image Container */}
+                <div className="relative max-h-screen max-w-full p-4">
+                  <img
+                    src={modalImages[currentImageIndex]}
+                    alt="Product View"
+                    className="max-h-[90vh] max-w-full object-contain"
+                  />
+
+                  {/* Image Counter */}
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-200 px-3 py-1 rounded-full text-sm">
+                    {currentImageIndex + 1} / {modalImages.length}
+                  </div>
+                </div>
+
+                <button
+                  className="absolute right-4 z-20 bg-gray-200 rounded-full p-2 opacity-80 hover:opacity-100"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    nextImage();
+                  }}
+                >
+                  <ChevronRight size={24} />
+                </button>
               </div>
             </div>
           )}
         </div>
       </div>
-
-      {/* Image Viewer Modal with Transparent Background */}
-      {isModalOpen && (
-        <div
-          className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm"
-          onClick={() => setIsModalOpen(false)}
-        >
-          <div
-            className="relative max-w-4xl w-full h-full flex items-center justify-center"
-            onClick={(e) => e.stopPropagation()}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-          >
-            {/* Close Button */}
-            <button
-              className="absolute top-4 right-4 z-20 bg-gray-200 rounded-full p-1"
-              onClick={() => setIsModalOpen(false)}
-            >
-              <X size={24} />
-            </button>
-
-            {/* Navigation Buttons */}
-            <button
-              className="absolute left-4 z-20 bg-gray-200 rounded-full p-2 opacity-80 hover:opacity-100"
-              onClick={(e) => {
-                e.stopPropagation();
-                prevImage();
-              }}
-            >
-              <ChevronLeft size={24} />
-            </button>
-
-            {/* Image Container */}
-            <div className="relative max-h-screen max-w-full p-4">
-              <img
-                src={modalImages[currentImageIndex]}
-                alt="Product View"
-                className="max-h-[90vh] max-w-full object-contain"
-              />
-
-              {/* Image Counter */}
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-200 px-3 py-1 rounded-full text-sm">
-                {currentImageIndex + 1} / {modalImages.length}
-              </div>
-            </div>
-
-            <button
-              className="absolute right-4 z-20 bg-gray-200 rounded-full p-2 opacity-80 hover:opacity-100"
-              onClick={(e) => {
-                e.stopPropagation();
-                nextImage();
-              }}
-            >
-              <ChevronRight size={24} />
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
