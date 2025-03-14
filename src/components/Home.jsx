@@ -79,7 +79,7 @@ const Home = () => {
             <div className="w-[600px] md:w-[1200px] md:h-[1200px] lg:w-[1600px] lg:h-[1600px] BannerCircle lg:top-[-900px] z-0 absolute h-[600px] rounded-full md:top-[-550px] top-[-290px] bgGradient overflow-hidden"></div>
             <div className="w-[600px] md:w-[1200px] md:h-[1200px] -z-10 absolute h-[600px] BannerCircle2 rounded-full top-[-270px] lg:top-[-880px] md:top-[-520px] bgGradient opacity-30 "></div>
             <div className=" absolute w-[70px] h-[70px]  left-[10px] top-2 drop-shadow-md">
-              <img src={leaft2} alt="" />
+              <img src={leaft2} alt="" className="md:hidden"/>
             </div>
             <div className="relative text-[#fff] pr-2 pt-5 leading-tight">
               <div className="text-[12px]  text-[#B1C29E] text-end font-semibold">

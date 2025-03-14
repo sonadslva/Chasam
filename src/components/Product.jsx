@@ -697,103 +697,113 @@ const ProductPage = () => {
 
                 {/* Scrollable container */}
                 <div className="overflow-auto max-h-[500px]">
-                  <table className="w-full min-w-[1000px] bg-white border rounded-lg">
-                    <thead className="sticky top-0 bg-gray-200 z-10 shadow-md">
-                      <tr>
-                        <th className="p-2">Images</th>
-                        <th className="p-2">Name</th>
-                        <th className="p-2">Category</th>
-                        <th className="p-2">Price</th>
-                        <th className="p-2">Description</th>
-                        <th className="p-2">Purpose</th>
-                        <th className="p-2">Usage</th>
-                        <th className="p-2">Net Qty</th>
-                        <th className="p-2">Status</th>
-                        <th className="p-2">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {products.map((product) => (
-                        <tr
-                          key={product.id}
-                          className="border-b border-r text-center"
-                        >
-                          <td className="p-2">
-                            {product.images && product.images.length > 0 ? (
-                              <div className="w-12 h-12 cursor-pointer">
-                                <img
-                                  src={product.images[0]}
-                                  alt="Thumbnail"
-                                  className="w-full h-full object-cover rounded"
-                                  onClick={() =>
-                                    openImageModal(product.images, 0)
-                                  }
-                                />
-                              </div>
-                            ) : (
-                              <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
-                                <BiSolidFileImage
-                                  size={20}
-                                  className="text-gray-400"
-                                />
-                              </div>
-                            )}
-                          </td>
-                          <td className="p-2">{product.name}</td>
-                          <td className="p-2">{product.category}</td>
-                          <td className="p-2">{product.price || "-"}</td>
-                          <td className="p-2 max-w-[200px]">
-                            <div className="truncate">
-                              {product.description || "-"}
-                            </div>
-                          </td>
-                          <td className="p-2">{product.purpose || "-"}</td>
-                          <td className="p-2">{product.usage || "-"}</td>
-                          <td className="p-2">{product.netQty || "-"}</td>
-                          <td className="p-2">
-                            <button
-                              className={`px-3 py-1 rounded-full text-sm ${
-                                product.status === "active"
-                                  ? "bg-green-500 text-white"
-                                  : "bg-red-500 text-white"
-                              }`}
-                              onClick={() => {
-                                const newStatus =
-                                  product.status === "active"
-                                    ? "inactive"
-                                    : "active";
-                                const productRef = ref(
-                                  dbRealtime,
-                                  `products/${product.id}`
-                                );
-                                update(productRef, { status: newStatus });
-                              }}
-                            >
-                              {product.status === "active"
-                                ? "Active"
-                                : "Inactive"}
-                            </button>
-                          </td>
-                          <td className="p-2">
-                            <div className="flex justify-center gap-2">
-                              <button
-                                className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-sm"
-                                onClick={() => handleEdit(product)}
-                              >
-                                Edit
-                              </button>
-                              <button
-                                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm"
-                                onClick={() => handleDelete(product.id)}
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          </td>
+                  <div className="w-full overflow-x-auto">
+                    <table className="w-full  bg-white border rounded-lg">
+                      <thead className="sticky top-0 bg-gray-200 z-10 shadow-md">
+                        <tr className="text-xs sm:text-sm md:text-base">
+                          <th className="p-2">Images</th>
+                          <th className="p-2">Name</th>
+                          <th className="p-2 hidden sm:table-cell">Category</th>
+                          <th className="p-2 ">Price</th>
+                          <th className="p-2 hidden md:table-cell ">
+                            Description
+                          </th>
+                          <th className="p-2 hidden lg:table-cell ">Purpose</th>
+                          <th className="p-2 hidden xl:table-cell">Usage</th>
+                          <th className="p-2 hidden xl:table-cell">Net Qty</th>
+                          <th className="p-2 hidden">Status</th>
+                          <th className="p-2 hidden">Actions</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {products.map((product) => (
+                          <tr
+                            key={product.id}
+                            className="border-b border-r text-center text-xs sm:text-sm md:text-base"
+                          >
+                            <td className="p-2">
+                              {product.images && product.images.length > 0 ? (
+                                <div className="w-12 h-12 cursor-pointer">
+                                  <img
+                                    src={product.images[0]}
+                                    alt="Thumbnail"
+                                    className="w-full h-full object-cover rounded"
+                                    onClick={() =>
+                                      openImageModal(product.images, 0)
+                                    }
+                                  />
+                                </div>
+                              ) : (
+                                <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
+                                  <BiSolidFileImage
+                                    size={20}
+                                    className="text-gray-400"
+                                  />
+                                </div>
+                              )}
+                            </td>
+                            <td className="p-2">{product.name}</td>
+                            <td className="p-2 hidden sm:table-cell">
+                              {product.category}
+                            </td>
+                            <td className="p-2">{product.price || "-"}</td>
+                            <td className="p-2 hidden md:table-cell max-w-[150px] truncate">
+                              {product.description || "-"}
+                            </td>
+                            <td className="p-2 hidden lg:table-cell">
+                              {product.purpose || "-"}
+                            </td>
+                            <td className="p-2 hidden xl:table-cell">
+                              {product.usage || "-"}
+                            </td>
+                            <td className="p-2 hidden xl:table-cell">
+                              {product.netQty || "-"}
+                            </td>
+                            <td className="p-2 hidden">
+                              <button
+                                className={`px-3 py-1 rounded-full text-sm ${
+                                  product.status === "active"
+                                    ? "bg-green-500 text-white"
+                                    : "bg-red-500 text-white"
+                                }`}
+                                onClick={() => {
+                                  const newStatus =
+                                    product.status === "active"
+                                      ? "inactive"
+                                      : "active";
+                                  const productRef = ref(
+                                    dbRealtime,
+                                    `products/${product.id}`
+                                  );
+                                  update(productRef, { status: newStatus });
+                                }}
+                              >
+                                {product.status === "active"
+                                  ? "Active"
+                                  : "Inactive"}
+                              </button>
+                            </td>
+                            <td className="p-2 hidden">
+                              <div className="flex justify-center gap-2">
+                                <button
+                                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-xs sm:text-sm"
+                                  onClick={() => handleEdit(product)}
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-xs sm:text-sm"
+                                  onClick={() => handleDelete(product.id)}
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             )}
@@ -813,7 +823,7 @@ const ProductPage = () => {
               >
                 {/* Close Button */}
                 <button
-                  className="absolute top-4 right-4 z-20 bg-gray-200 rounded-full p-1"
+                  className="absolute top-24 right-4 z-20 bg-gray-200 rounded-full p-1"
                   onClick={() => setIsModalOpen(false)}
                 >
                   <X size={24} />
