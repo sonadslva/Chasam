@@ -134,7 +134,7 @@ useEffect(() => {
           Contact Us
         </button>
       </div>
-      <div className="px-2">
+      <div className="px-2 md:px-[25%] md:pt-[-10px]">
         <motion.div
           initial={{ y: 100, opacity: 0 }}
           animate={{
@@ -142,9 +142,9 @@ useEffect(() => {
             opacity: 1,
             transition: { duration: 1.2, ease: "backInOut" },
           }}
-          className="fixed w-[95%] mx-auto top-2 bottom-0 rounded-t-3xl z-[998] popUpBg bg-[#fff] backdrop-blur-sm overflow-y-auto scrollBar"
-        >
-          <div>
+          className="fixed w-[95%] md:w-[50%] md:flex md:flex-col md:justify-center mx-auto top-[30%] md:top-[50%] md:-translate-y-1/2 bottom-0 md:bottom-auto rounded-t-3xl z-[998] popUpBg bg-[#fff] backdrop-blur-sm overflow-y-auto md:overflow-y-visible scrollBar max-h-[90vh] md:max-h-[90vh]"
+          >
+          <div className="w-full h-full overflow-y-auto scrollBar ">
             <div className="flex pt-4 pl-4 mb-5">
               <span
                 className="bg-[#0000] p-1 rounded-full text-[#178000] text-xl"
@@ -154,90 +154,92 @@ useEffect(() => {
               </span>
             </div>
 
-            {/* Main Image Slider */}
-            <div
-              className="w-full flex justify-center items-center rounded-2xl h-[340px] backdrop-blur-sm mb-2 BoxShadow relative overflow-hidden"
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-            >
-              {/* Product Image with Animation */}
-              <div className="w-full h-full flex justify-center items-center z-10">
-                <motion.img
-                  key={currentIndex}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                  src={
-                    productImages.length >  0 ? productImages[currentIndex] : li1
-                  }
-                  alt={`${product?.name || "Product"} - Image ${
-                    currentIndex + 1
-                  }`}
-                  className="w-full h-full object-contain drop-shadow-md"
-                />
+            <div className="md:flex ">
+              {/* Main Image Slider */}
+              <div
+                className="w-full md:w-[70%] flex justify-center items-center rounded-2xl h-[280px] backdrop-blur-sm mb-2  relative overflow-hidden"
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+              >
+                {/* Product Image with Animation */}
+                <div className="w-full h-full flex justify-center items-center z-10">
+                  <motion.img
+                    key={currentIndex}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    src={
+                      productImages.length > 0 ? productImages[currentIndex] : li1
+                    }
+                    alt={`${product?.name || "Product"} - Image ${
+                      currentIndex + 1
+                    }`}
+                    className="w-full h-full object-contain drop-shadow-md"
+                  />
+                </div>
+
+                {/* Navigation Arrows - Only show if multiple images */}
+                {productImages.length > 1 && (
+                  <>
+                    <button
+                      onClick={prevImage}
+                      className="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 bg-green-600 text-white rounded-full p-2 opacity-80 hover:opacity-100"
+                      aria-label="Previous image"
+                    >
+                      <ChevronLeft size={20} />
+                    </button>
+
+                    <button
+                      onClick={nextImage}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 bg-green-600 text-white rounded-full p-2 opacity-80 hover:opacity-100"
+                      aria-label="Next image"
+                    >
+                      <ChevronRight size={20} />
+                    </button>
+                  </>
+                )}
+
+                {/* Pagination Indicators */}
+                {productImages.length > 1 && (
+                  <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 z-20">
+                    {productImages.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentIndex(index)}
+                        className={`w-2 h-2 rounded-full ${
+                          currentIndex === index ? "bg-white" : "bg-gray-400"
+                        }`}
+                        aria-label={`Go to image ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
 
-              {/* Navigation Arrows - Only show if multiple images */}
+              {/* Thumbnail Navigation */}
               {productImages.length > 1 && (
-                <>
-                  <button
-                    onClick={prevImage}
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 bg-green-600 text-white rounded-full p-2 opacity-80 hover:opacity-100"
-                    aria-label="Previous image"
-                  >
-                    <ChevronLeft size={20} />
-                  </button>
-
-                  <button
-                    onClick={nextImage}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 bg-green-600 text-white rounded-full p-2 opacity-80 hover:opacity-100"
-                    aria-label="Next image"
-                  >
-                    <ChevronRight size={20} />
-                  </button>
-                </>
-              )}
-
-              {/* Pagination Indicators */}
-              {productImages.length > 1 && (
-                <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 z-20">
-                  {productImages.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentIndex(index)}
-                      className={`w-2 h-2 rounded-full ${
-                        currentIndex === index ? "bg-white" : "bg-gray-400"
-                      }`}
-                      aria-label={`Go to image ${index + 1}`}
-                    />
-                  ))}
+                <div className="overflow-x-auto md:overflow-y-auto md:h-[280px] w-full md:w-[30%] scrollBar px-2 py-1">
+                  <div className="flex md:flex-col gap-2 mb-3 w-max md:w-full">
+                    {productImages.map((image, index) => (
+                      <div
+                        key={index}
+                        onClick={() => setCurrentIndex(index)}
+                        className={`w-[100px] h-[100px] bg-[#fff] shadow-2xl rounded-md cursor-pointer overflow-hidden ${
+                          currentIndex === index ? "ring-2 ring-green-600" : ""
+                        }`}
+                      >
+                        <img
+                          src={image}
+                          alt={`Thumbnail ${index + 1}`}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
-
-            {/* Thumbnail Navigation */}
-            {productImages.length > 1 && (
-              <div className="overflow-x-auto w-full scrollBar px-2 py-1">
-                <div className="flex gap-2 mb-3 w-max ">
-                  {productImages.map((image, index) => (
-                    <div
-                      key={index}
-                      onClick={() => setCurrentIndex(index)}
-                      className={`w-[100px] h-[100px]  bg-[#fff] shadow-2xl rounded-md cursor-pointer overflow-hidden ${
-                        currentIndex === index ? "ring-2 ring-green-600" : ""
-                      }`}
-                    >
-                      <img
-                        src={image}
-                        alt={`Thumbnail ${index + 1}`}
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             <div className="px-4 py-2 mb-2 BoxShadow">
               <div className="text-xl font-bold text-[#000000] TextFont1">
@@ -274,7 +276,7 @@ useEffect(() => {
             {/* Usage */}
             <div
               className={`px-4 BoxShadow pb-2 ${
-                showOtherDetails ? "mb-5" : "mb-20"
+                showOtherDetails ? "mb-5" : "mb-14"
               }`}
             >
               <div className="relative">
@@ -305,7 +307,7 @@ useEffect(() => {
 
             {/* Other Details */}
             {showOtherDetails && (
-              <div className="px-4 text-sm text-[#000000] mb-20 font-semibold">
+              <div className="px-4 text-sm text-[#000000] mb-14 font-semibold">
                 <div className="TextFont font-bold text-xl mb-2">
                   Other Information
                 </div>

@@ -167,7 +167,7 @@ const Products = () => {
 
   
   return (
-    <div className="overflow-hidden relative w-full">
+    <div className="w-full min-h-screen bg-white relative">
       <div className="absolute top-0 bottom-0 left-0 right-0">
         <img
           src="https://img.freepik.com/free-vector/hand-drawn-olive-green-background_23-2149725222.jpg?t=st=1739964142~exp=1739967742~hmac=2bc705054c2a2430867275dad61e87e6b18ad0dda207c3f165ca54f906f8a593&w=1060"
@@ -177,18 +177,18 @@ const Products = () => {
       </div>
 
       {/* top section */}
-      <section className="relative overflow-hidden ">
+      <section className="relative overflow-hidden max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         <div>
           <div className="w-[600px] md:w-[1200px] md:h-[1200px] lg:w-[1600px] lg:h-[1600px] BannerCircle lg:top-[-900px] z-0 absolute h-[600px] rounded-full md:top-[-550px] top-[-290px] bgGradient overflow-hidden"></div>
-          <div className="w-[600px] md:w-[1200px] md:h-[1200px] -z-10 absolute h-[600px] BannerCircle2 rounded-full top-[-270px] lg:top-[-880px] md:top-[-520px] bgGradient opacity-30 "></div>
-          <div className=" absolute w-[70px] h-[70px]  left-[10px] top-2 drop-shadow-md pb-5">
+          <div className="w-[600px] md:w-[1200px] md:h-[1200px] -z-10 absolute h-[600px] BannerCircle2 rounded-full top-[-270px] lg:top-[-880px] md:top-[-520px] bgGradient opacity-30"></div>
+          <div className="absolute w-[70px] h-[70px] left-[10px] top-2 drop-shadow-md pb-5">
             <img src={leaft2} alt="" />
           </div>
           <div className="relative text-[#fff] pr-2 pt-5 leading-tight mb-5">
-            <div className="text-[12px]  text-[#B1C29E] text-end font-semibold">
+            <div className="text-[12px] text-[#B1C29E] text-end font-semibold">
               Leading Spice Retailer in Wayanad
             </div>
-            <div className="text-2xl text-end font-bold TextFont1 ">
+            <div className="text-2xl text-end font-bold TextFont1">
               Chasam Ayurvedic
             </div>
             <div className="text-[12px] text-[#B1C29E] text-end font-semibold">
@@ -197,36 +197,36 @@ const Products = () => {
           </div>
 
           {/* banner */}
-          <div className="px-2 mb-3  relative mt-2">
+          <div className="mb-3 relative mt-2">
             {banners.length > 1 ? (
               <Swiper
                 modules={[Pagination, Autoplay]}
                 pagination={{
                   clickable: true,
                   renderBullet: (index, className) => `
-          <span class="${className}" style="background-color: #95CD41; width: 10px; height: 10px; margin-bottom: 10px;"></span>
-        `,
+                    <span class="${className}" style="background-color: #95CD41; width: 10px; height: 10px; margin-bottom: 10px;"></span>
+                  `,
                 }}
                 autoplay={{ delay: 3000, disableOnInteraction: false }}
                 loop={true}
-                className="w-full h-auto md:h-auto BoxShadow border-[#fff] border rounded-xl overflow-hidden"
+                className="w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[500px] BoxShadow border-[#fff] border rounded-xl overflow-hidden"
               >
                 {banners.map((banner) => (
-                  <SwiperSlide key={banner.id}>
+                  <SwiperSlide key={banner.id} className="h-full">
                     <img
                       src={banner.image}
                       alt="Banner"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover object-center"
                     />
                   </SwiperSlide>
                 ))}
               </Swiper>
             ) : banners.length === 1 ? (
-              <div className="w-full h-auto md:h-auto BoxShadow border-[#fff] border rounded-xl overflow-hidden">
+              <div className="w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[500px] BoxShadow border-[#fff] border rounded-xl overflow-hidden">
                 <img
                   src={banners[0].image}
                   alt="Banner"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-center"
                 />
               </div>
             ) : (
@@ -235,9 +235,9 @@ const Products = () => {
           </div>
 
           {/* search */}
-          <div className="px-2 w-full mb-3 max-w-[1200px] mx-auto">
+          <div className="w-full mb-3">
             <div className="bg-gradient-to-r from-[#13c200] via-[#7eff87] to-[#006000] rounded-3xl p-[1px]">
-              <div className="relative w-full flex justify- items-center bg-[#fff] py-3 lg:py-4 rounded-3xl">
+              <div className="relative w-full flex items-center bg-[#fff] py-3 lg:py-4 rounded-3xl">
                 <input
                   type="text"
                   placeholder="Search Product..."
@@ -245,7 +245,7 @@ const Products = () => {
                   value={searchQuery}
                   onChange={handleSearchChange}
                 />
-                <div className=" absolute right-5 text-2xl text-[#5B913B]">
+                <div className="absolute right-5 text-2xl text-[#5B913B]">
                   <CgSearch />
                 </div>
               </div>
@@ -255,7 +255,6 @@ const Products = () => {
           {/* category */}
           <div className="mb-5 overflow-x-auto relative whitespace-nowrap w-full scrollBar">
             <ul className="flex items-center lg:justify-center gap-2 font-semibold flex-shrink-0 min-w-fit px-4">
-              {/* Add ALL option */}
               <li
                 className="flex justify-center items-center flex-col text-[12px] font-semibold gap-1 cursor-pointer"
                 onClick={() => handleCategorySelect(null)}
@@ -282,7 +281,6 @@ const Products = () => {
                 </span>
               </li>
 
-              {/* Category list */}
               {categories.map((category) => (
                 <li
                   key={category.id}
@@ -319,19 +317,19 @@ const Products = () => {
       </section>
 
       {/* product list */}
-      <section className="w-full px-2 mb-16 md:py-8">
-        <div className="w-full grid grid-cols-2 place-items-center  md:grid md:grid-cols-2 gap-2 relative z-20 mb-2">
+      <section className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pb-16">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 relative z-20">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
-              <div key={product.id} className="w-full ">
+              <div key={product.id} className="w-full">
                 <div
-                  className="w-full relative flex flex-col gap-3 drop-shadow-sm h-[250px] p-1  backdrop-blur-sm rounded-xl border border-[#fff] bg-[#fff]"
+                  className="w-full relative flex flex-col gap-3 drop-shadow-sm h-[250px] p-1 backdrop-blur-sm rounded-xl border border-[#fff] bg-[#fff] hover:shadow-lg transition-shadow duration-300"
                   onClick={() => {
                     setSelectedProductId(product.id);
                     setOpenPopUp(true);
                   }}
                 >
-                  <div className="w-full h-[150px] rounded-xl border-[#fff] border overflow-hidden ">
+                  <div className="w-full h-[150px] rounded-xl border-[#fff] border overflow-hidden">
                     <img
                       src={
                         product.image || (product.images && product.images[0])
@@ -340,8 +338,8 @@ const Products = () => {
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="flex flex-col gap- bg-amber-100 w-full px-2  rounded-b-xl">
-                    <div className="text-[#000] font-bold TextFont1">
+                  <div className="flex flex-col gap-1 bg-amber-100 w-full px-2 rounded-b-xl">
+                    <div className="text-[#000] font-bold TextFont1 truncate">
                       {product.name}
                     </div>
                     <div className="text-[#000] font-base flex items-center">
@@ -358,7 +356,7 @@ const Products = () => {
               </div>
             ))
           ) : (
-            <div className="text-center text-white text-lg py-4">
+            <div className="col-span-full text-center text-gray-600 text-lg py-4">
               No products found
             </div>
           )}
