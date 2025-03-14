@@ -167,8 +167,8 @@ const Products = () => {
 
   
   return (
-    <div className="w-full min-h-screen bg-white relative pt-4">
-      <div className="absolute top-0 bottom-0 left-0 right-0">
+    <div className="w-full min-h-screen bg-white relative ">
+      <div className="absolute top-0 bottom-0 left-[-2px] right-0">
         <img
           src="https://img.freepik.com/free-vector/hand-drawn-olive-green-background_23-2149725222.jpg?t=st=1739964142~exp=1739967742~hmac=2bc705054c2a2430867275dad61e87e6b18ad0dda207c3f165ca54f906f8a593&w=1060"
           alt=""
@@ -177,7 +177,7 @@ const Products = () => {
       </div>
 
       {/* top section */}
-      <section className="relative overflow-hidden max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+      <section className="relative overflow-hidden max-w-7xl mx-auto px-0 md:px-6">
         <div>
           <div className="w-[600px] md:w-[1200px] md:h-[1200px] lg:w-[1600px] lg:h-[1600px] BannerCircle lg:top-[-900px] z-0 absolute h-[600px] rounded-full md:top-[-550px] top-[-290px] bgGradient overflow-hidden"></div>
           <div className="w-[600px] md:w-[1200px] md:h-[1200px] -z-10 absolute h-[600px] BannerCircle2 rounded-full top-[-270px] lg:top-[-880px] md:top-[-520px] bgGradient opacity-30"></div>
@@ -197,7 +197,7 @@ const Products = () => {
           </div>
 
           {/* banner */}
-          <div className="mb-3 relative mt-2">
+          <div className="mb-3 relative mt-2 px-2">
             {banners.length > 1 ? (
               <Swiper
                 modules={[Pagination, Autoplay]}
@@ -235,7 +235,7 @@ const Products = () => {
           </div>
 
           {/* search */}
-          <div className="w-full mb-3">
+          <div className="w-full mb-3 px-2">
             <div className="bg-gradient-to-r from-[#13c200] via-[#7eff87] to-[#006000] rounded-3xl p-[1px]">
               <div className="relative w-full flex items-center bg-[#fff] py-3 lg:py-4 rounded-3xl">
                 <input

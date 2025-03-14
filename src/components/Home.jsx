@@ -143,7 +143,7 @@ const Home = () => {
             </div>
             {/* banner */}
 
-            <div className="mb-3 relative mt-2 md:px-2">
+            <div className="mb-3 relative mt-2 md:px-2 px-2">
             {banners.length > 1 ? (
               <Swiper
                 modules={[Pagination, Autoplay]}
