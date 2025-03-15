@@ -79,7 +79,7 @@ const Home = () => {
             <div className="w-[600px] md:w-[1200px] md:h-[1200px] lg:w-[1600px] lg:h-[1600px] BannerCircle lg:top-[-900px] z-0 absolute h-[600px] rounded-full md:top-[-550px] top-[-290px] bgGradient overflow-hidden"></div>
             <div className="w-[600px] md:w-[1200px] md:h-[1200px] -z-10 absolute h-[600px] BannerCircle2 rounded-full top-[-270px] lg:top-[-880px] md:top-[-520px] bgGradient opacity-30 "></div>
             <div className=" absolute w-[70px] h-[70px]  left-[10px] top-2 drop-shadow-md">
-              <img src={leaft2} alt="" className="md:hidden"/>
+              <img src={leaft2} alt="" className="md:hidden" />
             </div>
             <div className="relative text-[#fff] pr-2 pt-5 leading-tight">
               <div className="text-[12px]  text-[#B1C29E] text-end font-semibold">
@@ -127,7 +127,7 @@ const Home = () => {
                     />
                   </div>
                   <div className="text-center font-bold text-[10px] leading-tight bottom-1 HeaderElementstext">
-                    Quality Guranteed
+                    Quality Guaranteed
                   </div>
                 </div>
               </div>
@@ -144,41 +144,41 @@ const Home = () => {
             {/* banner */}
 
             <div className="mb-3 relative mt-2 md:px-2 px-2">
-            {banners.length > 1 ? (
-              <Swiper
-                modules={[Pagination, Autoplay]}
-                pagination={{
-                  clickable: true,
-                  renderBullet: (index, className) => `
+              {banners.length > 1 ? (
+                <Swiper
+                  modules={[Pagination, Autoplay]}
+                  pagination={{
+                    clickable: true,
+                    renderBullet: (index, className) => `
                     <span class="${className}" style="background-color: #95CD41; width: 10px; height: 10px; margin-bottom: 10px;"></span>
                   `,
-                }}
-                autoplay={{ delay: 3000, disableOnInteraction: false }}
-                loop={true}
-                className="w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[500px] BoxShadow border-[#fff] border rounded-xl overflow-hidden"
-              >
-                {banners.map((banner) => (
-                  <SwiperSlide key={banner.id} className="h-full">
-                    <img
-                      src={banner.image}
-                      alt="Banner"
-                      className="w-full h-full object-cover object-center"
-                    />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            ) : banners.length === 1 ? (
-              <div className="w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[500px] BoxShadow border-[#fff] border rounded-xl overflow-hidden">
-                <img
-                  src={banners[0].image}
-                  alt="Banner"
-                  className="w-full h-full object-cover object-center"
-                />
-              </div>
-            ) : (
-              <p>No active banners</p>
-            )}
-          </div>
+                  }}
+                  autoplay={{ delay: 3000, disableOnInteraction: false }}
+                  loop={true}
+                  className="w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[500px] BoxShadow border-[#fff] border rounded-xl overflow-hidden"
+                >
+                  {banners.map((banner) => (
+                    <SwiperSlide key={banner.id} className="h-full">
+                      <img
+                        src={banner.image}
+                        alt="Banner"
+                        className="w-full h-full object-cover object-center"
+                      />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              ) : banners.length === 1 ? (
+                <div className="w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[500px] BoxShadow border-[#fff] border rounded-xl overflow-hidden">
+                  <img
+                    src={banners[0].image}
+                    alt="Banner"
+                    className="w-full h-full object-cover object-center"
+                  />
+                </div>
+              ) : (
+                <p>No active banners</p>
+              )}
+            </div>
 
             {/* Category */}
             <div className="grid grid-cols-2 md:grid-cols-3 px-2 gap-2 mb-5">
