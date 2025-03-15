@@ -697,9 +697,9 @@ const ProductPage = () => {
 
                 {/* Scrollable container */}
                 <div className="overflow-auto max-h-[500px]">
-                  <div className="w-full overflow-x-auto">
-                    <table className="w-full  bg-white border rounded-lg">
-                      <thead className="sticky top-0 bg-gray-200 z-10 shadow-md">
+                  <div className="w-full overflow-x-auto overflow-auto">
+                    <table className="w-full  bg-white border rounded-lg md:overflow-auto">
+                      <thead className="sticky top-0 bg-gray-200 z-10 shadow-md ">
                         <tr className="text-xs sm:text-sm md:text-base">
                           <th className="p-2">Images</th>
                           <th className="p-2">Name</th>
@@ -711,8 +711,8 @@ const ProductPage = () => {
                           <th className="p-2 hidden lg:table-cell ">Purpose</th>
                           <th className="p-2 hidden xl:table-cell">Usage</th>
                           <th className="p-2 hidden xl:table-cell">Net Qty</th>
-                          <th className="p-2 hidden">Status</th>
-                          <th className="p-2 hidden">Actions</th>
+                          <th className="p-2 hidden xl:table-cell">Status</th>
+                          <th className="p-2 hidden xl:table-cell">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -759,7 +759,7 @@ const ProductPage = () => {
                             <td className="p-2 hidden xl:table-cell">
                               {product.netQty || "-"}
                             </td>
-                            <td className="p-2 hidden">
+                            <td className="p-2 hidden xl:table-cell">
                               <button
                                 className={`px-3 py-1 rounded-full text-sm ${
                                   product.status === "active"
@@ -783,7 +783,7 @@ const ProductPage = () => {
                                   : "Inactive"}
                               </button>
                             </td>
-                            <td className="p-2 hidden">
+                            <td className="p-2 hidden xl:table-cell">
                               <div className="flex justify-center gap-2">
                                 <button
                                   className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md text-xs sm:text-sm"
